@@ -1,0 +1,35 @@
+@startuml
+
+package org.korsnaike.pattern {
+    class Student {
+        - id: Int
+        - lastName: String
+        - firstName: String
+        - middleName: String
+        - telegram: String
+        - git: String
+        - phone: String
+        - email: String
+
+        + constructor(id: Int, lastName: String, firstName: String, middleName: String, telegram: String, git: String)
+        + constructor(info: Map<String, Any?>)
+
+        + getPhone(): String
+        + setPhone(value: String): void
+        + getEmail(): String
+        + setEmail(value: String): void
+
+        + validate(): Boolean
+        + set_contacts(email: String, telegram: String, phone: String): void
+
+        {static} - PHONE_REGEX: Regex
+        {static} - EMAIL_REGEX: Regex
+
+        {static} + validatePhone(phoneNumber: String): void
+        {static} + validateEmail(email: String): void
+
+        + toString(): String
+    }
+}
+
+@enduml
