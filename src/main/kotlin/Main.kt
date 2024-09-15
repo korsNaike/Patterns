@@ -31,7 +31,19 @@ fun main() {
         "Ivanovna"
     )
 
+    val student4 = Student(
+        mapOf(
+            "id" to 4,
+            "lastName" to "Doe",
+            "firstName" to "Jane",
+            "middleName" to "Olivia",
+            "phone" to "+1 (555) 1234567",
+            "email" to "jane.doe@example.com"
+        )
+    )
+
     println(student1)
     println(student2)
     println(student3)
+    println(student4)
 }
