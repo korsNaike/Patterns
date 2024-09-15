@@ -6,7 +6,6 @@ class Student(
     var firstName: String,
     var middleName: String,
     var telegram: String? = null,
-    var email: String? = null,
     var git: String? = null
 ) {
 
@@ -19,17 +18,35 @@ class Student(
             field = value
         }
 
-    private fun validatePhone(phoneNumber: String?) {
-        if (!isValidPhoneNumber(phoneNumber)) {
-            throw IllegalArgumentException("Invalid phone number format: $phoneNumber")
+    var email: String? = null
+        get() {
+            return field
         }
-    }
+        set(value) {
+            validateEmail(value)
+            field = value
+        }
 
     companion object {
         private val PHONE_REGEX = Regex("(?:\\+|\\d)[\\d\\-\\(\\) ]{9,}\\d")
+        private val EMAIL_REGEX = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$")
 
-        fun isValidPhoneNumber(phoneNumber: String?): Boolean {
-            return phoneNumber == null || PHONE_REGEX.matches(phoneNumber)
+        /**
+         * Проверить верность номера
+         */
+        fun validatePhone(phoneNumber: String?) {
+            if (!(phoneNumber == null || PHONE_REGEX.matches(phoneNumber))) {
+                throw IllegalArgumentException("Invalid phone number format: $phoneNumber")
+            }
+        }
+
+        /**
+         * Проверить верность почты
+         */
+        fun validateEmail(email: String?) {
+            if (!(email == null || EMAIL_REGEX.matches(email))) {
+                throw IllegalArgumentException("Invalid email format: $email")
+            }
         }
     }
 
@@ -45,7 +62,8 @@ class Student(
         telegram: String? = null,
         email: String? = null,
         git: String? = null
-    ) : this(id, lastName, firstName, middleName, telegram, email, git) {
+    ) : this(id, lastName, firstName, middleName, telegram, git) {
+        this.email = email
         this.phone = phone
     }
 
