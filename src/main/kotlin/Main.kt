@@ -1,16 +1,37 @@
-package org.example
+package org.korsnaike
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import org.korsnaike.pattern.Student;
+
 fun main() {
-    val name = "Kotlin"
-    //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-    // to see how IntelliJ IDEA suggests fixing it.
-    println("Hello, " + name + "!")
+    val student1 = Student(
+        1,
+        "Ivanov",
+        "Ivan",
+        "Ivanovich",
+        "+7 (123) 456-78-90",
+        "@ivanivanov",
+        "ivan.ivanov@example.com",
+        "ivanivanov"
+    )
 
-    for (i in 1..5) {
-        //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-        // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        println("i = $i")
-    }
+    val student2 = Student(
+        2,
+        "Petrov",
+        "Petr",
+        "Petrovich",
+        "+7 (987) 654-32-10",
+        "@petrpetrov",
+        "petr.petrov@example.com"
+    )
+
+    val student3 = Student(
+        3,
+        "Sidorova",
+        "Svetlana",
+        "Ivanovna"
+    )
+
+    println(student1)
+    println(student2)
+    println(student3)
 }

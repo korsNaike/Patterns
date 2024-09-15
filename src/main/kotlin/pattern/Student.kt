@@ -1,4 +1,4 @@
-package org.example.pattern
+package org.korsnaike.pattern
 
 class Student(
     private var id: Int = 0,
@@ -72,5 +72,10 @@ class Student(
 
     fun setGit(git: String?) {
         this.git = git
+    }
+
+    override fun toString(): String {
+        return "Student(id=$id, name='$firstName $middleName $lastName', " +
+                "phone=$phone, telegram=$telegram, email=$email, git=$git)"
     }
 }
