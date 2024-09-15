@@ -5,24 +5,49 @@ class Student(
     var lastName: String,
     var firstName: String,
     var middleName: String,
-    var phone: String? = null,
     var telegram: String? = null,
     var email: String? = null,
     var git: String? = null
 ) {
 
-    constructor(
-        id: Int,
-        lastName: String,
-        firstName: String,
-        middleName: String
-    ) : this(id, lastName, firstName, middleName, null, null, null, null)
+    var phone: String? = null
+        get() {
+            return field
+        }
+        set(value) {
+            validatePhone(value)
+            field = value
+        }
 
+    private fun validatePhone(phoneNumber: String?) {
+        if (!isValidPhoneNumber(phoneNumber)) {
+            throw IllegalArgumentException("Invalid phone number format: $phoneNumber")
+        }
+    }
+
+    companion object {
+        private val PHONE_REGEX = Regex("(?:\\+|\\d)[\\d\\-\\(\\) ]{9,}\\d")
+
+        fun isValidPhoneNumber(phoneNumber: String?): Boolean {
+            return phoneNumber == null || PHONE_REGEX.matches(phoneNumber)
+        }
+    }
+
+    /**
+     * Конструктор с номером телефона
+     */
     constructor(
+        id: Int = 0,
         lastName: String,
         firstName: String,
-        middleName: String
-    ) : this(0, lastName, firstName, middleName, null, null, null, null)
+        middleName: String,
+        phone: String? = null,
+        telegram: String? = null,
+        email: String? = null,
+        git: String? = null
+    ) : this(id, lastName, firstName, middleName, telegram, email, git) {
+        this.phone = phone
+    }
 
     constructor(
         info: Map<String, Any?>

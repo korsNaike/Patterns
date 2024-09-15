@@ -46,4 +46,6 @@ fun main() {
     println(student2)
     println(student3)
     println(student4)
+
+    student4.phone = "+712223311"
 }
