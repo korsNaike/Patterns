@@ -82,8 +82,9 @@ class Student(
 
     constructor(
         serializedString: String
-    ): this(0, "", "", "") {
-        val regex = Regex("Student\\(id=([^,]+), firstName=([^,]+), lastName=([^,]+), middleName=([^,]+), phone=([^,]+), telegram=([^,]+), email=([^,]+), git=([^)]*)\\)")
+    ) : this(0, "", "", "") {
+        val regex =
+            Regex("Student\\(id=([^,]+), firstName=([^,]+), lastName=([^,]+), middleName=([^,]+), phone=([^,]+), telegram=([^,]+), email=([^,]+), git=([^)]*)\\)")
         val matchResult = regex.find(serializedString)
 
         if (matchResult != null) {
@@ -91,10 +92,10 @@ class Student(
             this.firstName = matchResult.groups[2]?.value ?: ""
             this.lastName = matchResult.groups[3]?.value ?: ""
             this.middleName = matchResult.groups[4]?.value ?: ""
-            this.phone = matchResult.groups[5]?.value.let { if (it == null || it == "null") null else it}
-            this.telegram = matchResult.groups[6]?.value.let { if (it == null || it == "null") null else it}
-            this.email = matchResult.groups[7]?.value.let { if (it == null || it == "null") null else it}
-            this.git = matchResult.groups[8]?.value.let { if (it == null || it == "null") null else it}
+            this.phone = matchResult.groups[5]?.value.let { if (it == null || it == "null") null else it }
+            this.telegram = matchResult.groups[6]?.value.let { if (it == null || it == "null") null else it }
+            this.email = matchResult.groups[7]?.value.let { if (it == null || it == "null") null else it }
+            this.git = matchResult.groups[8]?.value.let { if (it == null || it == "null") null else it }
 
             if (firstName.isEmpty()) {
                 throw IllegalArgumentException("Invalid student string format: firstName is empty!")
@@ -146,5 +147,32 @@ class Student(
         if (phone != null) {
             this.phone = phone;
         }
+    }
+
+    /**
+     * Метод для получения краткой информации о студенте
+     */
+    fun getInfo(): String {
+        val initials = getInitials()
+        val contactInfo = getContactInfo()
+        return "$lastName $initials; $git; $contactInfo"
+    }
+
+    /**
+     * Метод для получения инициалов студента
+     */
+    private fun getInitials(): String {
+        return "${firstName.first()}. ${middleName.first()}."
+    }
+
+    /**
+     * Метод для получения информации о способе связи
+     */
+    private fun getContactInfo(): String {
+        val telegramContact = if (telegram != null) "Telegram: $telegram;" else ""
+        val phoneContact = if (phone != null) "Phone: $phone;" else ""
+        val emailContact = if (email != null) "Email: $email;" else ""
+
+        return listOf(telegramContact, phoneContact, emailContact).first { it.isNotEmpty() }
     }
 }
