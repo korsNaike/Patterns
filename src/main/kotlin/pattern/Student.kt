@@ -95,6 +95,22 @@ class Student(
             this.telegram = matchResult.groups[6]?.value.let { if (it == null || it == "null") null else it}
             this.email = matchResult.groups[7]?.value.let { if (it == null || it == "null") null else it}
             this.git = matchResult.groups[8]?.value.let { if (it == null || it == "null") null else it}
+
+            if (firstName.isEmpty()) {
+                throw IllegalArgumentException("Invalid student string format: firstName is empty!")
+            }
+            if (lastName.isEmpty()) {
+                throw IllegalArgumentException("Invalid student string format: lastName is empty!")
+            }
+            if (middleName.isEmpty()) {
+                throw IllegalArgumentException("Invalid student string format: middleName is empty!")
+            }
+
+            if (!validate()) {
+                throw IllegalArgumentException("Invalid student string format: git or some contact is empty")
+            }
+        } else {
+            throw IllegalArgumentException("Invalid student string format: $serializedString")
         }
     }
 
