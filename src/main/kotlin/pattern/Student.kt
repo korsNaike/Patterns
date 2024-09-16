@@ -80,9 +80,26 @@ class Student(
         info.getOrDefault("git", null) as String?
     )
 
+    constructor(
+        serializedString: String
+    ): this(0, "", "", "") {
+        val regex = Regex("Student\\(id=([^,]+), firstName=([^,]+), lastName=([^,]+), middleName=([^,]+), phone=([^,]+), telegram=([^,]+), email=([^,]+), git=([^)]*)\\)")
+        val matchResult = regex.find(serializedString)
+
+        if (matchResult != null) {
+            this.id = matchResult.groups[1]?.value?.toInt() ?: 0
+            this.firstName = matchResult.groups[2]?.value ?: ""
+            this.lastName = matchResult.groups[3]?.value ?: ""
+            this.middleName = matchResult.groups[4]?.value ?: ""
+            this.phone = matchResult.groups[5]?.value.let { if (it == null || it == "null") null else it}
+            this.telegram = matchResult.groups[6]?.value.let { if (it == null || it == "null") null else it}
+            this.email = matchResult.groups[7]?.value.let { if (it == null || it == "null") null else it}
+            this.git = matchResult.groups[8]?.value.let { if (it == null || it == "null") null else it}
+        }
+    }
+
     override fun toString(): String {
-        return "Student(id=$id, name='$firstName $middleName $lastName', " +
-                "phone=$phone, telegram=$telegram, email=$email, git=$git)"
+        return "Student(id=$id, firstName=$firstName, lastName=$lastName, middleName=$middleName, phone=$phone, telegram=$telegram, email=$email, git=$git)"
     }
 
     /**
