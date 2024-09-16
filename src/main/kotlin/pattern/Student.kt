@@ -1,13 +1,13 @@
 package org.korsnaike.pattern
 
 class Student(
-    var id: Int = 0,
+    override var id: Int = 0,
     var lastName: String,
     var firstName: String,
     var middleName: String,
     var telegram: String? = null,
-    var git: String? = null
-) {
+    override var git: String? = null
+): StudentBase(id, git) {
 
     var phone: String? = null
         get() {
@@ -150,29 +150,15 @@ class Student(
     }
 
     /**
-     * Метод для получения краткой информации о студенте
-     */
-    fun getInfo(): String {
-        val initials = getInitials()
-        val contactInfo = getContactInfo()
-        return "$lastName $initials; $git; $contactInfo"
-    }
-
-    /**
-     * Метод для получения инициалов студента
-     */
-    private fun getInitials(): String {
-        return "${firstName.first()}. ${middleName.first()}."
-    }
-
-    /**
      * Метод для получения информации о способе связи
      */
-    private fun getContactInfo(): String {
+    override fun getContactInfo(): String {
         val telegramContact = if (telegram != null) "Telegram: $telegram;" else ""
         val phoneContact = if (phone != null) "Phone: $phone;" else ""
         val emailContact = if (email != null) "Email: $email;" else ""
 
         return listOf(telegramContact, phoneContact, emailContact).first { it.isNotEmpty() }
     }
+
+    override fun getLastNameWithInitials(): String = "$lastName ${firstName.first()}. ${middleName.first()}."
 }
