@@ -1,0 +1,86 @@
+@startuml
+
+class Student {
+  - id: Int
+  - lastName: String
+  - firstName: String
+  - middleName: String
+  - telegram: String
+  - git: String
+  - phone: String
+  - email: String
+  + Student(id: Int, lastName: String, firstName: String, middleName: String, telegram: String?, git: String?)
+  + Student(id: Int, lastName: String, firstName: String, middleName: String, phone: String?, telegram: String?, email: String?, git: String?)
+  + Student(info: Map<String, Any?>)
+  + getElement(index: Int): T
+  + getSize(): Int
+  + toList(): List<T>
+  + select(number: Int): Unit
+  + getSelected(): List<Int>
+  + getNames(): List<String>
+  + getData(): Data_table<Any>
+  + getEntityFields(): List<String>
+  + getDataRow(entity: T): List<Any>
+  + generateOrderNumbers(): List<Int>
+  + validatePhone(phoneNumber: String?): Unit
+  + validateEmail(email: String?): Unit
+  + read_from_txt(filePath: String): List<Student>
+  + write_to_txt(directory: String, fileName: String, students: List<Student>): Unit
+}
+
+class Data_table<T> {
+  - data: List<List<T>>
+  + create(data: List<List<T>>): Data_table<T>
+  + getElement(row: Int, column: Int): T
+  + getColumnCount(): Int
+  + getRowCount(): Int
+}
+
+abstract class Data_list<T : Comparable<T>> {
+  - elements: List<T>
+  - selectedIndices: MutableSet<Int>
+  + getElement(index: Int): T
+  + getSize(): Int
+  + toList(): List<T>
+  + select(number: Int): Unit
+  + getSelected(): List<Int>
+  + getNames(): List<String>
+  + getData(): Data_table<Any>
+}
+
+abstract class StudentBase {
+    - id: Int
+    - git: String
+    + getContactInfo(): String
+    + getLastNameWithInitials(): String
+    + getInfo(): String
+}
+
+class Student_short {
+    - id: Int
+    - lastNameInitials: String
+    - git: String
+    - contact: String
+    + Student_short(id: Int, student: Student)
+    + Student_short(id: Int, info: String)
+    + getContactInfo(): String
+    + getLastNameWithInitials(): String
+    + compareTo(other: Student_short): Int
+}
+
+class Data_list_student_short {
+    - students: List<Student_short>
+    + Data_list_student_short(students: List<Student_short>)
+    + getEntityFields(): List<String>
+    + getDataRow(entity: Student_short): List<Any>
+}
+
+StudentBase <|-- Student_short
+Student --|> StudentBase
+Data_table "1" <-- "1..*" Data_list
+Data_list_student_short --|> Data_list
+Data_list_student_short o-- Student_short
+
+
+
+@enduml
