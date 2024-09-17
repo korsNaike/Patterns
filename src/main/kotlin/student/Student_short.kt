@@ -1,4 +1,4 @@
-package org.korsnaike.pattern
+package org.korsnaike.student
 
 class Student_short(
     override val id: Int,

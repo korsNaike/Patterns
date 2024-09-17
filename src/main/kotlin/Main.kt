@@ -1,7 +1,6 @@
 package org.korsnaike
 
-import org.korsnaike.pattern.Student;
-import org.korsnaike.pattern.Student_short;
+import org.korsnaike.student.Student;
 
 fun main() {
     val student1 = Student(

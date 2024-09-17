@@ -1,4 +1,4 @@
-package org.korsnaike.pattern
+package org.korsnaike.student
 
 /**
  * Базовый класс для студентов

@@ -1,4 +1,4 @@
-package org.korsnaike.pattern
+package org.korsnaike.student
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
@@ -108,7 +108,7 @@ class StudentTest {
         student.telegram = "@johndoe"
         student.git = "johndoe"
 
-        val expected = "Student(id=1, name='John Michael Doe', phone=+1234567890, telegram=@johndoe, email=john@example.com, git=johndoe)"
+        val expected = "Student(id=1, firstName=John, lastName=Doe, middleName=Michael, phone=+1234567890, telegram=@johndoe, email=john@example.com, git=johndoe)"
         assertEquals(expected, student.toString())
     }
 
