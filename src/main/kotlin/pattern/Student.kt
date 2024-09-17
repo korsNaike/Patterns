@@ -77,6 +77,26 @@ class Student(
                 throw IllegalArgumentException("Ошибка при чтении файла: ${e.message}")
             }
         }
+
+        /**
+         * Запись списка студентов в файл
+         */
+        fun write_to_txt(directory: String, fileName: String, students: List<Student>) {
+            val file = File(directory, fileName)
+
+            try {
+                file.parentFile?.mkdirs() // Создаем директорию, если она не существует
+                file.bufferedWriter().use { writer ->
+                    students.forEach { student ->
+                        writer.write(student.toString())
+                        writer.newLine()
+                    }
+                }
+                println("Файл успешно записан: ${file.absolutePath}")
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Ошибка при записи в файл: ${e.message}")
+            }
+        }
     }
 
     /**

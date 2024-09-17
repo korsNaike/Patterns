@@ -25,6 +25,8 @@ fun main() {
         git = "ivanov-va-git"
     )
 
+
+    Student.write_to_txt("src/files", "students.txt", listOf(student1, studentForShort, studentFromString))
     val students = Student.read_from_txt("src/files/students.txt")
     students.forEach { println(it.getInfo()) }
 }
