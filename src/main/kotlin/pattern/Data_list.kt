@@ -23,9 +23,20 @@ abstract class Data_list<T : Comparable<T>>(protected val elements: List<T>) {
 
     fun getSelected(): List<Int> = selectedIndices.toList()
 
-    abstract fun getNames(): List<String>
+    fun getNames(): List<String> {
+        return listOf("№") + getEntityFields()
+    }
 
-    abstract fun getData(): Data_table<Any>
+    abstract fun getEntityFields(): List<String>
+
+    fun getData(): Data_table<Any> {
+        val data = elements.mapIndexed { index, entity ->
+            listOf(index) + getDataRow(entity)
+        }
+        return Data_table.create(data) as Data_table<Any>
+    }
+
+    abstract fun getDataRow(entity: T): List<Any>
 
     protected fun generateOrderNumbers(): List<Int> = elements.indices.toList()
 }
