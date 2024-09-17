@@ -47,9 +47,9 @@ fun checkValidStudent(student: Student) {
 
 fun dataTableTest() {
     val students = listOf(
-        Student_short(1, "Иванов", "https://github.com/ivanov/Patterns"),
-        Student_short(2, "Петров", "https://github.com/petrov/Patterns"),
-        Student_short(3, "Сидоров", "https://github.com/sidorov/Patterns")
+        Student_short(1, "Иванов И.И.", "https://github.com/ivanov/Patterns", "Telegram: @ivanich"),
+        Student_short(2, "Петров П.П.", "https://github.com/petrov/Patterns", "Email: pudge@gmail.com"),
+        Student_short(3, "Сидоров С.С.", "https://github.com/sidorov/Patterns", "Phone: +7 (999) 222-11-11")
     )
 
     val studentList = Data_list_student_short(students)
