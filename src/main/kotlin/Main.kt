@@ -1,8 +1,14 @@
 package org.korsnaike
 
+import org.korsnaike.pattern.student.Data_list_student_short
 import org.korsnaike.student.Student;
+import org.korsnaike.student.Student_short
 
 fun main() {
+    dataTableTest();
+}
+
+fun studentTest() {
     val student1 = Student(
         1,
         "Ivanov",
@@ -36,5 +42,33 @@ fun checkValidStudent(student: Student) {
         println("Student $studentName is valid");
     } else {
         println("Student $studentName is not valid");
+    }
+}
+
+fun dataTableTest() {
+    val students = listOf(
+        Student_short(1, "Иванов", "https://github.com/ivanov/Patterns"),
+        Student_short(2, "Петров", "https://github.com/petrov/Patterns"),
+        Student_short(3, "Сидоров", "https://github.com/sidorov/Patterns")
+    )
+
+    val studentList = Data_list_student_short(students)
+
+    println("Названия столбцов: ${studentList.getNames()}")
+
+    studentList.select(0)
+    studentList.select(2)
+    println("Выбранные элементы: ${studentList.getSelected()}")
+
+    val dataTable = studentList.getData()
+    println("Количество строк: ${dataTable.getRowCount()}")
+    println("Количество столбцов: ${dataTable.getColumnCount()}")
+
+// Вывод данных таблицы
+    for (i in 0 until dataTable.getRowCount()) {
+        for (j in 0 until dataTable.getColumnCount()) {
+            print("${dataTable.getElement(i, j)} ")
+        }
+        println()
     }
 }

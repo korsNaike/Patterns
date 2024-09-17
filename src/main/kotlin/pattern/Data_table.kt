@@ -1,8 +1,8 @@
 package org.korsnaike.pattern
 
-class Data_table<T> private constructor(private val data: Array<Array<T>>) {
+class Data_table<T> private constructor(private val data: List<List<T>>) {
     companion object {
-        fun <T> create(data: Array<Array<T>>): Data_table<T> {
+        fun <T> create(data: List<List<T>>): Data_table<T> {
             return Data_table(data)
         }
     }
