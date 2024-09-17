@@ -1,10 +1,10 @@
 package org.korsnaike.pattern
 
-class Data_list<T : Comparable<T>> private constructor(private val elements: List<T>) {
-    companion object {
-        fun <T : Comparable<T>> create(elements: List<T>): Data_list<T> {
-            return Data_list(elements.sorted())
-        }
+abstract class Data_list<T : Comparable<T>>(protected val elements: List<T>) {
+    private val selectedIndices = mutableSetOf<Int>()
+
+    init {
+        elements.sorted()
     }
 
     fun getElement(index: Int): T {
@@ -15,4 +15,17 @@ class Data_list<T : Comparable<T>> private constructor(private val elements: Lis
     fun getSize(): Int = elements.size
 
     fun toList(): List<T> = elements.toList()
+
+    fun select(number: Int) {
+        require(number in elements.indices) { "Номер выходит за пределы списка" }
+        selectedIndices.add(number)
+    }
+
+    fun getSelected(): List<Int> = selectedIndices.toList()
+
+    abstract fun getNames(): List<String>
+
+    abstract fun getData(): Data_table<Any>
+
+    protected fun generateOrderNumbers(): List<Int> = elements.indices.toList()
 }
