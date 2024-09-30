@@ -51,52 +51,6 @@ class Student(
                 throw IllegalArgumentException("Invalid email format: $email")
             }
         }
-
-        /**
-         * Метод для получения списка студентов из файла
-         */
-        fun read_from_txt(filePath: String): List<Student> {
-            val file = File(filePath)
-            if (!file.exists() || !file.isFile) {
-                throw IllegalArgumentException("Некорректный адрес файла: $filePath")
-            }
-
-            return try {
-                file.readLines().mapNotNull { line ->
-                    try {
-                        Student(line)
-                    } catch (e: IllegalArgumentException) {
-                        println("Ошибка при разборе строки: $line")
-                        println("Причина: ${e.message}")
-                        null
-                    }
-                }
-            } catch (e: FileNotFoundException) {
-                throw IllegalArgumentException("Файл не найден: $filePath")
-            } catch (e: Exception) {
-                throw IllegalArgumentException("Ошибка при чтении файла: ${e.message}")
-            }
-        }
-
-        /**
-         * Запись списка студентов в файл
-         */
-        fun write_to_txt(directory: String, fileName: String, students: List<Student>) {
-            val file = File(directory, fileName)
-
-            try {
-                file.parentFile?.mkdirs() // Создаем директорию, если она не существует
-                file.bufferedWriter().use { writer ->
-                    students.forEach { student ->
-                        writer.write(student.toString())
-                        writer.newLine()
-                    }
-                }
-                println("Файл успешно записан: ${file.absolutePath}")
-            } catch (e: Exception) {
-                throw IllegalArgumentException("Ошибка при записи в файл: ${e.message}")
-            }
-        }
     }
 
     /**
