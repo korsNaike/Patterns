@@ -1,29 +1,19 @@
-package org.korsnaike.strategy
+package org.korsnaike.strategy.studentFileProcessor
 
-import org.korsnaike.pattern.Data_list
-import org.korsnaike.pattern.student.Data_list_student_short
+import org.korsnaike.strategy.studentfileprocessor.StudentFileProcessor
 import org.korsnaike.student.Student
-import org.korsnaike.student.Student_short
 import java.io.File
 import java.io.FileNotFoundException
-import java.util.function.Predicate
 
-/**
- * Класс для работы с коллекцией объектов Student и получения его из txt файла
- */
-class Student_list_txt(students: MutableList<Student> = mutableListOf()) : Student_base_list(students) {
-
-    /**
-     * Метод для получения списка студентов из файла
-     */
-    override fun read_from_file(filePath: String) {
+class StudentTxtFileProcessor: StudentFileProcessor {
+    override fun read_from_file(filePath: String): MutableList<Student> {
         val file = File(filePath)
         if (!file.exists() || !file.isFile) {
             throw IllegalArgumentException("Некорректный адрес файла: $filePath")
         }
 
         try {
-            students = file.readLines().mapNotNull { line ->
+            return file.readLines().mapNotNull { line ->
                 try {
                     Student(line)
                 } catch (e: IllegalArgumentException) {
@@ -39,10 +29,7 @@ class Student_list_txt(students: MutableList<Student> = mutableListOf()) : Stude
         }
     }
 
-    /**
-     * Запись списка студентов в файл
-     */
-    override fun write_to_file(directory: String, fileName: String) {
+    override fun write_to_file(students: MutableList<Student>, directory: String, fileName: String) {
         val file = File(directory, fileName)
 
         try {

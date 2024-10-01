@@ -2,20 +2,43 @@ package org.korsnaike.strategy
 
 import org.korsnaike.pattern.Data_list
 import org.korsnaike.pattern.student.Data_list_student_short
+import org.korsnaike.strategy.studentfileprocessor.StudentFileProcessor
+import org.korsnaike.strategy.studentFileProcessor.StudentTxtFileProcessor
 import org.korsnaike.student.Student
 import org.korsnaike.student.Student_short
 
-abstract class Student_base_list(protected var students: MutableList<Student>) {
-    constructor() : this(mutableListOf())
+class Student_list(
+    private var students: MutableList<Student>,
+    var fileProcessor: StudentFileProcessor = StudentTxtFileProcessor()
+) {
+    constructor(
+        fileProcessor: StudentFileProcessor = StudentTxtFileProcessor()
+    ) : this(mutableListOf(), fileProcessor)
 
-    constructor(filePath: String) : this(mutableListOf()) {
+    constructor(
+        filePath: String,
+        fileProcessor: StudentFileProcessor = StudentTxtFileProcessor()
+    ) : this(mutableListOf(), fileProcessor) {
         read_from_file(filePath)
     }
 
-    abstract fun read_from_file(filePath: String)
+    /**
+     * Считывает объекты из файла, используя объект StudentFileProcessor
+     */
+    fun read_from_file(filePath: String) {
+        students = fileProcessor.read_from_file(filePath)
+    }
 
-    abstract fun write_to_file(directory: String, fileName: String)
+    /**
+     * Записать объекты в файл, использует объект StudentFileProcessor
+     */
+    fun write_to_file(directory: String, fileName: String) {
+        fileProcessor.write_to_file(students, directory, fileName)
+    }
 
+    /**
+     * Найти объект по id
+     */
     fun findById(id: Int): Student {
         return students.first { it.id == id }
     }

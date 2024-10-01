@@ -23,10 +23,25 @@ abstract class Data_list<T : Comparable<T>> {
   # generateOrderNumbers(): List<Int>
 }
 
-abstract class Student_base_list {
+interface StudentFileProcessor {
+  + read_from_file(filePath: String): MutableList<Student>
+  + write_to_file(students: MutableList<Student>, directory: String, fileName: String)
+}
+
+class StudentJsonFileProcessor {
+}
+
+class StudentTxtFileProcessor {
+}
+
+class StudentYamlFileProcessor {
+}
+
+class Student_list {
   # students: MutableList<Student>
-  + {abstract} read_from_file(filePath: String)
-  + {abstract} write_to_file(directory: String, fileName: String)
+  + fileProcessor: StudentFileProcessor
+  + read_from_file(filePath: String)
+  + write_to_file(directory: String, fileName: String)
   + findById(id: Int): Student
   + get_k_n_student_short_list(n: Int, k: Int): Data_list<Student_short>
   + orderStudentsByLastNameInitials()
@@ -68,15 +83,6 @@ class Data_table<T> {
 class Data_list_student_short {
 }
 
-class Student_list_json {
-}
-
-class Student_list_txt {
-}
-
-class Student_list_yaml {
-}
-
 ' Relationships
 StudentBase <|-- Student
 StudentBase <|-- Student_short
@@ -85,11 +91,14 @@ Comparable <|.. Student_short
 Data_list <|-- Data_list_student_short
 Data_list_student_short o-- "many" Student_short
 
-Student_base_list <|-- Student_list_json
-Student_base_list <|-- Student_list_txt
-Student_base_list <|-- Student_list_yaml
-Student_base_list o-- "many" Student
+Student_list o-- "many" Student
 
 Data_list ..> Data_table : uses
+
+StudentFileProcessor <|.. StudentJsonFileProcessor
+StudentFileProcessor <|.. StudentYamlFileProcessor
+StudentFileProcessor <|.. StudentTxtFileProcessor
+
+Student_list o-- StudentFileProcessor
 
 @enduml
