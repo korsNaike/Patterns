@@ -2,6 +2,7 @@ package org.korsnaike
 
 import org.korsnaike.pattern.student.Data_list_student_short
 import org.korsnaike.strategy.Student_list_json
+import org.korsnaike.strategy.Student_list_yaml
 import org.korsnaike.student.Student;
 import org.korsnaike.student.Student_short
 
@@ -11,11 +12,11 @@ fun main() {
 }
 
 fun studentTest() {
-    val filePath = "src/files/students.json"
-    val studentList = Student_list_json(filePath)
+    val filePath = "src/files/students.yaml"
+    val studentList = Student_list_yaml(filePath)
 
     studentList.add(Student(0, "NewJohn", "John", "JOGN", email = "jhon@hmail.ru"))
-    studentList.write_to_file("src/files", "students.json")
+    studentList.write_to_file("src/files", "students.yaml")
 }
 
 fun checkValidStudent(student: Student) {

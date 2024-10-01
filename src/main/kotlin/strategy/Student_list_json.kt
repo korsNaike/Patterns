@@ -106,4 +106,6 @@ class Student_list_json(private var students: MutableList<Student> = mutableList
      * Получить количество объектов в списке
      */
     fun get_student_short_count(): Int = students.count()
+
+    fun getStudents(): MutableList<Student> = students
 }
