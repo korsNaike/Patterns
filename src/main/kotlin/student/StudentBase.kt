@@ -1,12 +1,12 @@
 package org.korsnaike.student
 
+import kotlinx.serialization.Serializable
+
 /**
  * Базовый класс для студентов
  */
-abstract class StudentBase(
-    open val id: Int,
-    open var git: String? = null
-) {
+@Serializable
+abstract class StudentBase() {
 
     /**
      * Получить контактную информацию о пользователе
@@ -18,12 +18,15 @@ abstract class StudentBase(
      */
     abstract fun getLastNameWithInitials(): String
 
+    abstract fun getGitInfo(): String?
+
     /**
      * Метод для получения краткой информации о студенте
      */
     fun getInfo(): String {
         val lastNameWithInitials = getLastNameWithInitials()
         val contactInfo = getContactInfo()
+        val git = getGitInfo()
         return "$lastNameWithInitials; $git; $contactInfo"
     }
 }

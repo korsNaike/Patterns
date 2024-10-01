@@ -1,39 +1,21 @@
 package org.korsnaike
 
 import org.korsnaike.pattern.student.Data_list_student_short
+import org.korsnaike.strategy.Student_list_json
 import org.korsnaike.student.Student;
 import org.korsnaike.student.Student_short
 
 fun main() {
-    dataTableTest();
+//    dataTableTest();
+    studentTest();
 }
 
 fun studentTest() {
-    val student1 = Student(
-        1,
-        "Ivanov",
-        "Ivan",
-        "Ivanovich",
-        email = "ivan.ivanov@example.com",
-        git = "ivanivanov"
-    )
+    val filePath = "src/files/students.json"
+    val studentList = Student_list_json(filePath)
 
-    val studentFromString = Student("Student(id=2, firstName=Petr, lastName=Ivanov, middleName=Ivanovich, phone=+7 (123) 456-78-90, telegram=null, email=ivan.ivanov@example.com, git=ivanivanov)");
-    println(studentFromString.getInfo())
-
-    val studentForShort = Student(
-        id = 3,
-        lastName = "Иванов",
-        firstName = "Василий",
-        middleName = "Иванович",
-        telegram = "@vaska",
-        git = "ivanov-va-git"
-    )
-
-
-    Student.write_to_txt("src/files", "students.txt", listOf(student1, studentForShort, studentFromString))
-    val students = Student.read_from_txt("src/files/students.txt")
-    students.forEach { println(it.getInfo()) }
+    studentList.add(Student(0, "NewJohn", "John", "JOGN", email = "jhon@hmail.ru"))
+    studentList.write_to_file("src/files", "students.json")
 }
 
 fun checkValidStudent(student: Student) {

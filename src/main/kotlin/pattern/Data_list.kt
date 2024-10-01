@@ -39,4 +39,6 @@ abstract class Data_list<T : Comparable<T>>(protected val elements: List<T>) {
     abstract fun getDataRow(entity: T): List<Any>
 
     protected fun generateOrderNumbers(): List<Int> = elements.indices.toList()
+
+    override fun toString(): String = elements.toString()
 }
