@@ -1,0 +1,95 @@
+@startuml
+
+' Abstract classes
+abstract class StudentBase {
+  + {abstract} getContactInfo(): String
+  + {abstract} getLastNameWithInitials(): String
+  + {abstract} getGitInfo(): String?
+  + getInfo(): String
+}
+
+abstract class Data_list<T : Comparable<T>> {
+  # elements: List<T>
+  - selectedIndices: MutableSet<Int>
+  + getElement(index: Int): T
+  + getSize(): Int
+  + toList(): List<T>
+  + select(number: Int)
+  + getSelected(): List<Int>
+  + getNames(): List<String>
+  + {abstract} getEntityFields(): List<String>
+  + getData(): Data_table<Any>
+  + {abstract} getDataRow(entity: T): List<Any>
+  # generateOrderNumbers(): List<Int>
+}
+
+abstract class Student_base_list {
+  # students: MutableList<Student>
+  + {abstract} read_from_file(filePath: String)
+  + {abstract} write_to_file(directory: String, fileName: String)
+  + findById(id: Int): Student
+  + get_k_n_student_short_list(n: Int, k: Int): Data_list<Student_short>
+  + orderStudentsByLastNameInitials()
+  + orderStudents(comparator: Comparator<Student>)
+  + add(student: Student)
+  + replaceById(student: Student, id: Int)
+  + removeById(id: Int)
+  + get_student_short_count(): Int
+}
+
+' Concrete classes
+class Student {
+  + id: Int
+  + lastName: String
+  + firstName: String
+  + middleName: String
+  + telegram: String?
+  + git: String?
+  + phone: String?
+  + email: String?
+  + validate(): Boolean
+  + set_contacts(email: String?, telegram: String?, phone: String?)
+}
+
+class Student_short {
+  + id: Int
+  + lastNameInitials: String
+  + git: String?
+  + contact: String?
+}
+
+class Data_table<T> {
+  - data: List<List<T>>
+  + getElement(row: Int, column: Int): T
+  + getColumnCount(): Int
+  + getRowCount(): Int
+}
+
+class Data_list_student_short {
+}
+
+class Student_list_json {
+}
+
+class Student_list_txt {
+}
+
+class Student_list_yaml {
+}
+
+' Relationships
+StudentBase <|-- Student
+StudentBase <|-- Student_short
+Comparable <|.. Student_short
+
+Data_list <|-- Data_list_student_short
+Data_list_student_short o-- "many" Student_short
+
+Student_base_list <|-- Student_list_json
+Student_base_list <|-- Student_list_txt
+Student_base_list <|-- Student_list_yaml
+Student_base_list o-- "many" Student
+
+Data_list ..> Data_table : uses
+
+@enduml
