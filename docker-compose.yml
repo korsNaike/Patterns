@@ -1,0 +1,45 @@
+version: "1.0"
+name: "patterns"
+
+networks:
+  dev-patterns-network:
+    driver: bridge
+    external: true
+    ipam:
+      config:
+        - subnet: ${COMPOSE_SUBNET}
+          gateway: ${COMPOSE_GATEWAY}
+
+services:
+  postgres-db-patterns:
+    container_name: postgres-db-pattern
+    command: -c 'max_connections=2000'
+    image: postgres:latest
+    restart: unless-stopped
+    hostname: postgres-db-patterns
+    environment:
+      POSTGRES_DB: patterns-database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - ${POSTGRES_DB_EXTERNAL_PORT}:5432
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data:cached
+    networks:
+      dev-patterns-network:
+        ipv4_address: ${POSTGRES_DB_ADDRESS}
+
+#  kps-kotlin-patterns-service:
+#    container_name: kps-kotlin-patterns-service
+#    hostname: kps-kotlin-patterns-service
+#    build:
+#      context: ./kotlin-inf
+#    ports:
+#      - ${BACKEND_REDUCERS_EXTERNAL_PORT}:8081
+#    env_file:
+#      - ./kotlin-inf/.env.docker
+#    depends_on:
+#      - postgres-db-patterns
+#    networks:
+#      dev-patterns-network:
+#        ipv4_address: ${BACKEND_REDUCERS_ADDRESS}
