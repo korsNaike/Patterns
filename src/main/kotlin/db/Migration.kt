@@ -5,6 +5,9 @@ import org.korsnaike.config.Config
 abstract class Migration {
 
     protected lateinit var db: DbInterface;
+    fun getDataBase(): DbInterface {
+        return db
+    }
 
     init {
         db = PostgreDb.getInstance()
@@ -13,6 +16,7 @@ abstract class Migration {
     }
 
     private fun migrateAction(action: String) {
+        println("Begin \"${action}\" for ${this.javaClass.name}...")
         db.setAutoCommit(false)
         try {
             if (action == "up") {
@@ -22,12 +26,13 @@ abstract class Migration {
             }
 
             db.commit()
+            println("\"${action}\" for ${this.javaClass.name} have success!")
         } catch (e: Exception) {
+            println("Get some errors for \"${action}\" for ${this.javaClass.name}, rollback...")
             db.rollback()
-            print(e.message)
             e.printStackTrace()
         } finally {
-            db.closeConnection()
+            println("End \"${action}\" for ${this.javaClass.name}\n\n")
         }
     }
 

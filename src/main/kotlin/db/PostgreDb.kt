@@ -53,8 +53,8 @@ class PostgreDb private constructor(): DbInterface {
     }
 
     override fun connect() {
-        if (connection != null) {
-            throw DbConnectionException("Подключение уже было выполнено")
+        if (connection != null || connection?.isClosed == false) {
+            return
         }
         val url = "jdbc:postgresql://${host}:${port}/${dbName}"
         val user = this.user
@@ -102,5 +102,6 @@ class PostgreDb private constructor(): DbInterface {
     override fun closeConnection() {
         checkConnection()
         connection?.close()
+        connection = null
     }
 }
