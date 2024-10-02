@@ -1,15 +1,74 @@
 package org.korsnaike
 
+import org.korsnaike.db.Migration
+import org.korsnaike.migrations.`02102024_2353_create_table_students`
 import org.korsnaike.pattern.student.Data_list_student_short
 import org.korsnaike.strategy.Student_list
-import org.korsnaike.strategy.studentFileProcessor.StudentJsonFileProcessor
-import org.korsnaike.strategy.studentFileProcessor.StudentYamlFileProcessor
+import org.korsnaike.strategy.studentfileprocessing.StudentYamlFileProcessor
+import org.korsnaike.strategy.studentfileprocessing.StudentJsonFileProcessor
 import org.korsnaike.student.Student;
 import org.korsnaike.student.Student_short
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.Statement
 
 fun main() {
 //    dataTableTest();
-    studentTest();
+//    studentTest();
+//    databaseTest();
+    migrationsUp()
+}
+
+fun migrationsUp() {
+    val migrations: List<Migration> = listOf(
+        `02102024_2353_create_table_students`(),
+
+    )
+    migrations.forEach { it.migrateUp() }
+}
+
+fun migrationsDown() {
+    val migrations: List<Migration> = listOf(
+        `02102024_2353_create_table_students`(),
+        )
+    migrations.forEach { it.migrateDown() }
+}
+
+fun databaseTest() {
+    val url = "jdbc:postgresql://localhost:10333/patterns-database"
+    val user = "postgres"
+    val password = "admin"
+
+    // Подключение к базе данных
+    var connection: Connection? = null
+    try {
+        connection = DriverManager.getConnection(url, user, password)
+        println("Подключение успешно!")
+
+        // Создаем объект Statement для выполнения запросов
+        val statement: Statement = connection.createStatement()
+
+        // Пример запроса
+        statement.execute(
+            "CREATE TABLE student (\n" +
+                    "    id SERIAL PRIMARY KEY,\n" +
+                    "    first_name VARCHAR(50) NOT NULL,\n" +
+                    "    last_name VARCHAR(50) NOT NULL,\n" +
+                    "    middle_name VARCHAR(50) NOT NULL,\n" +
+                    "    email VARCHAR(255) UNIQUE NULL,\n" +
+                    "    telegram VARCHAR(255) UNIQUE NULL,\n" +
+                    "    phone VARCHAR(255) UNIQUE NULL,\n" +
+                    "    git VARCHAR(255) UNIQUE NULL,\n" +
+                    "    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n" +
+                    ")"
+        )
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+    } finally {
+        // Закрываем соединение
+        connection?.close()
+    }
 }
 
 fun studentTest() {

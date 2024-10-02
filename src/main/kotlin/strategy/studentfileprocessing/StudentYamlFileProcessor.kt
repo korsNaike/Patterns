@@ -1,13 +1,12 @@
-package org.korsnaike.strategy.studentFileProcessor
+package org.korsnaike.strategy.studentfileprocessing
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
 import kotlinx.serialization.encodeToString
-import org.korsnaike.strategy.studentfileprocessor.StudentFileProcessor
 import org.korsnaike.student.Student
 import java.io.File
 
-class StudentYamlFileProcessor: StudentFileProcessor {
+class StudentYamlFileProcessor: StudentFileProcessorInterface {
     override fun read_from_file(filePath: String): MutableList<Student> {
         val file = File(filePath)
         if (!file.exists() || !file.isFile) {

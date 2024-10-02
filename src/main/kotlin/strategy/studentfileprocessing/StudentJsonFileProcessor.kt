@@ -1,12 +1,11 @@
-package org.korsnaike.strategy.studentFileProcessor
+package org.korsnaike.strategy.studentfileprocessing
 
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.korsnaike.strategy.studentfileprocessor.StudentFileProcessor
 import org.korsnaike.student.Student
 import java.io.File
 
-class StudentJsonFileProcessor: StudentFileProcessor {
+class StudentJsonFileProcessor: StudentFileProcessorInterface {
     override fun read_from_file(filePath: String): MutableList<Student> {
         val file = File(filePath)
         if (!file.exists() || !file.isFile) {

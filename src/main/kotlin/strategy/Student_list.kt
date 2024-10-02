@@ -2,22 +2,22 @@ package org.korsnaike.strategy
 
 import org.korsnaike.pattern.Data_list
 import org.korsnaike.pattern.student.Data_list_student_short
-import org.korsnaike.strategy.studentfileprocessor.StudentFileProcessor
-import org.korsnaike.strategy.studentFileProcessor.StudentTxtFileProcessor
+import org.korsnaike.strategy.studentfileprocessing.StudentFileProcessorInterface
+import org.korsnaike.strategy.studentfileprocessing.StudentTxtFileProcessor
 import org.korsnaike.student.Student
 import org.korsnaike.student.Student_short
 
 class Student_list(
     private var students: MutableList<Student>,
-    var fileProcessor: StudentFileProcessor = StudentTxtFileProcessor()
+    var fileProcessor: StudentFileProcessorInterface = StudentTxtFileProcessor()
 ) {
     constructor(
-        fileProcessor: StudentFileProcessor = StudentTxtFileProcessor()
+        fileProcessor: StudentFileProcessorInterface = StudentTxtFileProcessor()
     ) : this(mutableListOf(), fileProcessor)
 
     constructor(
         filePath: String,
-        fileProcessor: StudentFileProcessor = StudentTxtFileProcessor()
+        fileProcessor: StudentFileProcessorInterface = StudentTxtFileProcessor()
     ) : this(mutableListOf(), fileProcessor) {
         read_from_file(filePath)
     }
