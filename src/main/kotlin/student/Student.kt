@@ -3,6 +3,7 @@ package org.korsnaike.student
 import java.io.File
 import java.io.FileNotFoundException
 import kotlinx.serialization.Serializable
+import java.sql.ResultSet
 
 @Serializable
 class Student(
@@ -83,6 +84,19 @@ class Student(
         info.getOrDefault("telegram", null) as String?,
         info.getOrDefault("email", null) as String?,
         info.getOrDefault("git", null) as String?
+    )
+
+    constructor(
+        rs: ResultSet
+    ) : this(
+        id = rs.getInt("id").toInt(),
+        lastName = rs.getString("last_name").toString(),
+        firstName = rs.getString("first_name").toString(),
+        middleName = rs.getString("middle_name").toString(),
+        telegram = rs.getString("telegram").toString(),
+        phone = rs.getString("phone").toString(),
+        email = rs.getString("email").toString(),
+        git = rs.getString("git").toString()
     )
 
     constructor(

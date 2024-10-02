@@ -18,7 +18,7 @@ fun main() {
     db.connect()
     val result = db.executeQuery("SELECT * FROM student")
     while (result.next()) {
-        println(result.getString("first_name"))
+        println(Student(result))
     }
     db.closeConnection()
 }
