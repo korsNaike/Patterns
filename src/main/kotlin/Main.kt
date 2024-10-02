@@ -1,8 +1,8 @@
 package org.korsnaike
 
-import org.korsnaike.db.MigrationList
-import org.korsnaike.migrations.`02102024_2353_create_table_students`
-import org.korsnaike.migrations.`03102024_0004_add_test_data_to_student_table`
+import org.korsnaike.config.Config
+import org.korsnaike.db.DbInterface
+import org.korsnaike.db.PostgreDb
 import org.korsnaike.pattern.student.Data_list_student_short
 import org.korsnaike.strategy.Student_list
 import org.korsnaike.strategy.studentfileprocessing.StudentJsonFileProcessor
@@ -10,14 +10,17 @@ import org.korsnaike.strategy.studentfileprocessing.StudentYamlFileProcessor
 import org.korsnaike.student.Student
 import org.korsnaike.student.Student_short
 
+fun getDb() : DbInterface = PostgreDb.getInstance()
+
 fun main() {
-    val migrationList = MigrationList(
-        listOf(
-            `02102024_2353_create_table_students`(),
-            `03102024_0004_add_test_data_to_student_table`(),
-        )
-    )
-    migrationList.allUp()
+    val db = getDb()
+    db.initConnectionsParams(Config)
+    db.connect()
+    val result = db.executeQuery("SELECT * FROM student")
+    while (result.next()) {
+        println(result.getString("first_name"))
+    }
+    db.closeConnection()
 }
 
 fun studentTest() {
