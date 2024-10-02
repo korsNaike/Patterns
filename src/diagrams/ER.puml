@@ -1,0 +1,13 @@
+@startuml
+entity student {
+  id: SERIAL PK
+  first_name: VARCHAR(50) NOT NULL
+  last_name: VARCHAR(50) NOT NULL
+  middle_name: VARCHAR(50) NOT NULL
+  email: VARCHAR(255) UNIQUE NULL
+  telegram: VARCHAR(255) UNIQUE NULL
+  phone: VARCHAR(255) UNIQUE NULL
+  git: VARCHAR(255) UNIQUE NULL
+  created_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+}
+@enduml
