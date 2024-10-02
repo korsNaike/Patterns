@@ -15,6 +15,7 @@ dependencies {
     implementation("com.charleskorn.kaml:kaml:0.61.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.postgresql:postgresql:42.7.2")
+    implementation(kotlin("reflect"))
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 

@@ -2,6 +2,9 @@ package org.korsnaike.db
 
 import java.util.Comparator
 
+/**
+ * Класс для работы со списком миграций
+ */
 class MigrationList(private var migrations: List<Migration>) {
 
     private var migrationsMap: Map<String, Migration>? = null;
@@ -17,9 +20,21 @@ class MigrationList(private var migrations: List<Migration>) {
         db?.closeConnection()
     }
 
-    fun allDown() {
-        migrationsMap?.toSortedMap(Comparator.reverseOrder())
-            ?.forEach { it.value.migrateDown() }
+    fun allDown(count: Int? = null) {
+        if (count != null) {
+            require(count > 0)
+        }
+
+        if (count == null) {
+            migrationsMap?.toSortedMap(Comparator.reverseOrder())
+                ?.forEach { it.value.migrateDown() }
+        } else {
+            migrationsMap?.toSortedMap(Comparator.reverseOrder())
+                ?.asSequence()
+                ?.take(count)
+                ?.forEach { it.value.migrateDown() }
+        }
+
         db?.closeConnection()
     }
 }
