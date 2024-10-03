@@ -1,6 +1,7 @@
 package org.korsnaike.db
 
 import org.korsnaike.config.Config
+import java.sql.Connection
 import java.sql.ResultSet
 
 interface DbInterface {
@@ -44,4 +45,6 @@ interface DbInterface {
      * Закрыть подключение к базе данных
      */
     fun closeConnection()
+
+    fun getConn(): Connection?
 }

@@ -104,4 +104,8 @@ class PostgreDb private constructor(): DbInterface {
         connection?.close()
         connection = null
     }
+
+    override fun getConn(): Connection? {
+        return connection
+    }
 }
