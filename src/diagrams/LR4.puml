@@ -1,0 +1,193 @@
+@startuml
+
+' Interfaces
+interface StudentBase {
+    + {abstract} getContactInfo(): String
+    + {abstract} getLastNameWithInitials(): String
+    + {abstract} getGitInfo(): String?
+    + getInfo(): String
+}
+
+interface Comparable<T>
+
+interface StudentFileProcessorInterface {
+    + read_from_file(filePath: String): MutableList<Student>
+    + write_to_file(students: MutableList<Student>, directory: String, fileName: String)
+}
+
+interface DbInterface {
+    + initConnectionsParams(config: Config)
+    + connect()
+    + setAutoCommit(autoCommit: Boolean)
+    + commit()
+    + rollback()
+    + executeQuery(sql: String): ResultSet
+    + executeUpdate(sql: String): Int
+    + closeConnection()
+    + getConn(): Connection?
+}
+
+interface MigrationStoreInterface {
+    + storeUpMigrate(migrationName: String)
+    + removeMigrationByName(migrationName: String)
+    + getAlreadyUpMigrationNames(): List<String>
+}
+
+' Classes
+class Student {
+    - id: Int
+    - lastName: String
+    - firstName: String
+    - middleName: String
+    - telegram: String?
+    - git: String?
+    - phone: String?
+    - email: String?
+    + validate(): Boolean
+    + set_contacts(email: String?, telegram: String?, phone: String?)
+}
+
+class Student_short {
+    - id: Int
+    - lastNameInitials: String
+    - git: String?
+    - contact: String?
+}
+
+abstract class Data_list<T : Comparable<T>> {
+    # elements: List<T>
+    - selectedIndices: MutableSet<Int>
+    + getElement(index: Int): T
+    + getSize(): Int
+    + toList(): List<T>
+    + select(number: Int)
+    + getSelected(): List<Int>
+    + getNames(): List<String>
+    + getData(): Data_table<Any>
+    + {abstract} getEntityFields(): List<String>
+    + {abstract} getDataRow(entity: T): List<Any>
+}
+
+class Data_table<T> {
+    - data: List<List<T>>
+    + getElement(row: Int, column: Int): T
+    + getColumnCount(): Int
+    + getRowCount(): Int
+}
+
+class Data_list_student_short {
+    + getEntityFields(): List<String>
+    + getDataRow(entity: Student_short): List<Any>
+}
+
+class Student_list {
+    - students: MutableList<Student>
+    + fileProcessor: StudentFileProcessorInterface
+    + read_from_file(filePath: String)
+    + write_to_file(directory: String, fileName: String)
+    + findById(id: Int): Student
+    + get_k_n_student_short_list(n: Int, k: Int): Data_list<Student_short>
+    + orderStudentsByLastNameInitials()
+    + orderStudents(comparator: Comparator<Student>)
+    + add(student: Student)
+    + replaceById(student: Student, id: Int)
+    + removeById(id: Int)
+    + get_student_short_count(): Int
+}
+
+class Student_list_DB {
+    - db: DbInterface
+    + getStudentById(id: Int): Student?
+    + getKNStudentShortList(k: Int, n: Int): Data_list_student_short
+    + addStudent(student: Student): Int
+    + updateStudent(student: Student): Boolean
+    + deleteStudent(id: Int): Boolean
+    + getStudentCount(): Int
+}
+
+class StudentTxtFileProcessor {
+    + read_from_file(filePath: String): MutableList<Student>
+    + write_to_file(students: MutableList<Student>, directory: String, fileName: String)
+}
+
+class StudentYamlFileProcessor {
+    + read_from_file(filePath: String): MutableList<Student>
+    + write_to_file(students: MutableList<Student>, directory: String, fileName: String)
+}
+
+class StudentJsonFileProcessor {
+    + read_from_file(filePath: String): MutableList<Student>
+    + write_to_file(students: MutableList<Student>, directory: String, fileName: String)
+}
+
+class PostgreDb {
+    - host: String?
+    - port: String?
+    - dbName: String?
+    - user: String?
+    - password: String?
+    - connection: Connection?
+    + {static} getInstance(): PostgreDb
+}
+
+abstract class Migration {
+    # db: DbInterface
+    - migrationStore: MigrationStoreInterface
+    + getDataBase(): DbInterface
+    + migrateUp()
+    + migrateDown()
+    # {abstract} up()
+    # {abstract} down()
+}
+
+class MigrationList {
+    - migrations: List<Migration>
+    - migrationsMap: Map<String, Migration>?
+    - db: DbInterface?
+    + allUp()
+    + allDown(count: Int?)
+}
+
+class JsonMigrationStore {
+    - pathToFile: String
+    - json: Json
+    - readMigrations(): MutableList<MigrationData>
+    - writeMigrations(migrations: List<MigrationData>)
+}
+
+class MigrationData {
+    + name: String
+    + date: String
+}
+
+' Relationships
+StudentBase <|.. Student
+StudentBase <|.. Student_short
+Comparable <|.. Student_short
+
+Data_list <|-- Data_list_student_short
+Data_list_student_short ..> Student_short
+
+Student_list --> "0..*" Student
+Student_list --> StudentFileProcessorInterface
+Student_list ..> Data_list_student_short
+
+Student_list_DB --> DbInterface
+Student_list_DB ..> Student
+Student_list_DB ..> Data_list_student_short
+
+StudentFileProcessorInterface <|.. StudentTxtFileProcessor
+StudentFileProcessorInterface <|.. StudentYamlFileProcessor
+StudentFileProcessorInterface <|.. StudentJsonFileProcessor
+
+DbInterface <|.. PostgreDb
+
+Migration --> DbInterface
+Migration --> MigrationStoreInterface
+
+MigrationList --> "0..*" Migration
+
+MigrationStoreInterface <|.. JsonMigrationStore
+JsonMigrationStore ..> MigrationData
+
+@enduml
