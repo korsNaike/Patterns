@@ -1,108 +1,32 @@
 package org.korsnaike.strategy
 
-import org.korsnaike.pattern.Data_list
+import org.korsnaike.adapter.StudentListInterface
 import org.korsnaike.pattern.student.Data_list_student_short
-import org.korsnaike.strategy.studentfileprocessing.StudentFileProcessorInterface
-import org.korsnaike.strategy.studentfileprocessing.StudentTxtFileProcessor
 import org.korsnaike.student.Student
-import org.korsnaike.student.Student_short
 
-class Student_list(
-    private var students: MutableList<Student>,
-    var fileProcessor: StudentFileProcessorInterface = StudentTxtFileProcessor()
-) {
-    constructor(
-        fileProcessor: StudentFileProcessorInterface = StudentTxtFileProcessor()
-    ) : this(mutableListOf(), fileProcessor)
+class Student_list(private val studentSource: StudentListInterface) {
 
-    constructor(
-        filePath: String,
-        fileProcessor: StudentFileProcessorInterface = StudentTxtFileProcessor()
-    ) : this(mutableListOf(), fileProcessor) {
-        read_from_file(filePath)
+    fun getStudentById(id: Int): Student? {
+        return studentSource.getStudentById(id)
     }
 
-    /**
-     * Считывает объекты из файла, используя объект StudentFileProcessor
-     */
-    fun read_from_file(filePath: String) {
-        students = fileProcessor.read_from_file(filePath)
+    fun getKNStudentShortList(k: Int, n: Int): Data_list_student_short {
+        return studentSource.getKNStudentShortList(k, n)
     }
 
-    /**
-     * Записать объекты в файл, использует объект StudentFileProcessor
-     */
-    fun write_to_file(directory: String, fileName: String) {
-        fileProcessor.write_to_file(students, directory, fileName)
+    fun addStudent(student: Student): Int {
+        return studentSource.addStudent(student)
     }
 
-    /**
-     * Найти объект по id
-     */
-    fun findById(id: Int): Student {
-        return students.first { it.id == id }
+    fun updateStudent(student: Student): Boolean {
+        return studentSource.updateStudent(student)
     }
 
-    /**
-     * Получить список k по счету n объектов класса Student_short
-     *
-     * @param n - индекс с которого начинать выборку (должен быть 0 или больше)
-     * @param k - количество элементов для выборки (должно быть больше 0)
-     *
-     * @return Список объектов Student_short
-     */
-    fun get_k_n_student_short_list(n: Int, k: Int): Data_list<Student_short> {
-        require(n >= 0) { "Индекс n должен быть больше или равен 0." }
-        require(k > 0) { "Количество k должно быть больше 0." }
-
-        return Data_list_student_short(students
-            .drop(n)
-            .take(k)
-            .map { Student_short(it) }
-        )
+    fun deleteStudent(id: Int): Boolean {
+        return studentSource.deleteStudent(id)
     }
 
-    /**
-     * Сортировка списка по фамилии и инициалам
-     */
-    fun orderStudentsByLastNameInitials() {
-        orderStudents(compareBy { it.getLastNameWithInitials() })
+    fun getStudentCount(): Int {
+        return studentSource.getStudentCount()
     }
-
-    /**
-     * Сортировка списка
-     */
-    fun orderStudents(comparator: Comparator<Student>) {
-        students.sortedWith(comparator)
-    }
-
-    /**
-     * Добавление объекта
-     */
-    fun add(student: Student) {
-        val nextId = (students.maxByOrNull { it.id }?.id ?: 0) + 1
-        student.id = nextId
-
-        students.addLast(student)
-    }
-
-    /**
-     * Заменить объект по ID
-     */
-    fun replaceById(student: Student, id: Int) {
-        student.id = id
-        students.replaceAll { if (it.id == id) student else it }
-    }
-
-    /**
-     * Удалить по ID
-     */
-    fun removeById(id: Int) {
-        students.removeIf { it.id == id }
-    }
-
-    /**
-     * Получить количество объектов в списке
-     */
-    fun get_student_short_count(): Int = students.count()
 }

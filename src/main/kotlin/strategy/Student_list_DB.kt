@@ -1,5 +1,6 @@
 package org.korsnaike.strategy
 
+import org.korsnaike.adapter.StudentListInterface
 import org.korsnaike.config.Config
 import org.korsnaike.db.PostgreDb
 import org.korsnaike.db.DbInterface
@@ -10,13 +11,13 @@ import org.korsnaike.student.Student_short
 import java.sql.SQLException
 import java.sql.Statement
 
-class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()) {
+class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()): StudentListInterface {
 
     init {
         db.initConnectionsParams(config = Config)
     }
 
-    fun getStudentById(id: Int): Student? {
+    override fun getStudentById(id: Int): Student? {
         val query = "SELECT * FROM student WHERE id = $id"
         try {
             db.connect()
@@ -34,7 +35,7 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()) {
         }
     }
 
-    fun getKNStudentShortList(k: Int, n: Int):  Data_list_student_short {
+    override fun getKNStudentShortList(k: Int, n: Int):  Data_list_student_short {
         val offset = (k - 1) * n
         val query = "SELECT * FROM student ORDER BY id LIMIT $n OFFSET $offset"
         val studentShortList = mutableListOf<Student_short>()
@@ -55,7 +56,7 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()) {
         return Data_list_student_short(studentShortList)
     }
 
-    fun addStudent(student: Student): Int {
+    override fun addStudent(student: Student): Int {
         val insertSQL = """
             INSERT INTO student (last_name, first_name, middle_name, telegram, git, phone, email)
             VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -93,7 +94,7 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()) {
         return -1
     }
 
-    fun updateStudent(student: Student): Boolean {
+    override fun updateStudent(student: Student): Boolean {
         val updateSQL = """
             UPDATE student 
             SET last_name = ?, first_name = ?, middle_name = ?, telegram = ?, git = ?, phone = ?, email = ?
@@ -130,7 +131,7 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()) {
         return false
     }
 
-    fun deleteStudent(id: Int): Boolean {
+    override fun deleteStudent(id: Int): Boolean {
         val deleteSQL = "DELETE FROM student WHERE id = ?"
 
         try {
@@ -156,7 +157,7 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()) {
         return false
     }
 
-    fun getStudentCount(): Int {
+    override fun getStudentCount(): Int {
         val query = "SELECT COUNT(*) FROM student"
         try {
             db.connect()

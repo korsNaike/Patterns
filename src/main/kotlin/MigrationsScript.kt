@@ -36,8 +36,8 @@ fun getUnusedClassesForUp(
         migrationsDir.walk().filter { it.isFile && it.name.endsWith(".kt") }.forEach { file ->
             var className = file.nameWithoutExtension
             if (!excludedClasses.contains(className)) {
-                className = "org.korsnaike.migrations." + className
-                val kClass = Class.forName("$className").kotlin
+                className = "org.korsnaike.migrations.$className"
+                val kClass = Class.forName(className).kotlin
                 val instance = kClass.createInstance() // Проверяем, что класс можно проинстанциировать
                 unusedClasses.add(instance as Migration)
             }
