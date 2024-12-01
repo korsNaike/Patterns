@@ -5,18 +5,21 @@ import org.korsnaike.db.DbInterface
 import org.korsnaike.db.PostgreDb
 import org.korsnaike.pattern.student.Data_list_student_short
 import org.korsnaike.strategy.Student_list
-import org.korsnaike.strategy.Student_list_file
 import org.korsnaike.strategy.Student_list_DB
+import org.korsnaike.strategy.Student_list_file
 import org.korsnaike.strategy.studentfileprocessing.StudentJsonFileProcessor
 import org.korsnaike.strategy.studentfileprocessing.StudentYamlFileProcessor
 import org.korsnaike.student.Student
 import org.korsnaike.student.Student_short
-import javax.xml.stream.util.StreamReaderDelegate
+import view.StudentApp
+import java.io.PrintStream
+
 
 fun getDb() : DbInterface = PostgreDb.getInstance()
 
 fun main() {
-    testStudentAdapter()
+    val args = arrayOf<String>()
+    StudentApp.create(args)
 }
 
 fun testStudentAdapter() {
