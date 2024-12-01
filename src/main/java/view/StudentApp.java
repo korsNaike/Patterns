@@ -16,18 +16,34 @@ public class StudentApp {
     private static int currentPage = 1;
     private static final Student_list_DB studentDB = new Student_list_DB();
 
+    /** Поля фильтрации **/
     private static final JTextField nameField = new JTextField();
+
     private static final JComboBox<String> gitComboBox = new JComboBox<>(new String[] { "Не важно", "Да", "Нет" });
     private static final JTextField gitField = new JTextField();
 
     private static final JTextField emailField = new JTextField();
     private static final JComboBox<String> emailComboBox = new JComboBox<>(new String[] { "Не важно", "Да", "Нет" });
+
     private static final JTextField phoneField = new JTextField();
     private static final JComboBox<String> phoneComboBox = new JComboBox<>(new String[] { "Не важно", "Да", "Нет" });
+
     private static final JTextField telegramField = new JTextField();
     private static final JComboBox<String> telegramComboBox = new JComboBox<>(new String[] { "Не важно", "Да", "Нет" });
 
-    public static void create(String[] args) {
+    /** Элементы пагинации **/
+    private static final JLabel pageInfoLabel = new JLabel("Страница: 1 / ?");
+    private static final JButton prevPageButton = new JButton("Предыдущая");
+    private static final JButton nextPageButton = new JButton("Следующая");
+
+    /** Кнопки управления **/
+    private static final JButton refreshButton = new JButton("Обновить");
+    private static final JButton addButton = new JButton("Добавить");
+    private static final JButton editButton = new JButton("Изменить");
+    private static final JButton deleteButton = new JButton("Удалить");
+
+
+    public static void create() {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Student Management");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,12 +78,6 @@ public class StudentApp {
 
         // Панель управления
         JPanel buttonPanel = new JPanel();
-        JButton addButton = new JButton("Добавить");
-        JButton editButton = new JButton("Изменить");
-        JButton deleteButton = new JButton("Удалить");
-        JButton nextPageButton = new JButton("Следующая");
-        JButton prevPageButton = new JButton("Предыдущая");
-        JButton refreshButton = new JButton("Обновить");
 
         editButton.setEnabled(false);
         deleteButton.setEnabled(false);
@@ -136,11 +146,10 @@ public class StudentApp {
             }
         });
 
-        refreshButton.addActionListener(e -> {
-            refreshInfo(tableModel);
-        });
+        refreshButton.addActionListener(e -> refreshInfo(tableModel));
 
         // Добавляем кнопки
+        buttonPanel.add(pageInfoLabel); // Метка страницы
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
@@ -194,7 +203,7 @@ public class StudentApp {
         textField.setEnabled(false); // По умолчанию поле выключено
         comboBox.addActionListener(e -> {
             // Поле доступно только если выбран "Да"
-            textField.setEnabled(comboBox.getSelectedItem().equals("Да"));
+            textField.setEnabled(Objects.equals(comboBox.getSelectedItem(), "Да"));
         });
     }
 
@@ -232,9 +241,14 @@ public class StudentApp {
                 emailSearch
         );
 
-        // Загружаем данные с учетом фильтров
+        // Загружаем данные и получаем общее количество записей
+        int totalItems = studentDB.getFilteredStudentCount(studentFilter);
         loadStudents(tableModel, studentFilter);
+
+        // Обновляем состояние кнопок и метки страницы
+        updatePageControls(totalItems);
     }
+
 
 
     private static void loadStudents(
@@ -260,5 +274,23 @@ public class StudentApp {
             });
         }
     }
+
+    private static void updatePageControls(int totalItems) {
+        int lastPage = calculateLastPage(totalItems);
+
+        // Обновление текста метки страницы
+        pageInfoLabel.setText("Страница: " + currentPage + " / " + lastPage);
+
+        // Отключение кнопок в зависимости от текущей страницы
+        prevPageButton.setEnabled(currentPage > 1);
+        nextPageButton.setEnabled(currentPage < lastPage);
+    }
+
+
+    private static int calculateLastPage(int totalItems) {
+        int page = (int) Math.ceil((double) totalItems / PAGE_SIZE);
+        return page == 0 ? 1 : page;
+    }
+
 
 }

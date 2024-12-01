@@ -65,7 +65,45 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()): St
     ): List<Student> {
         val offset = (page - 1) * pageSize
 
-        var query = "SELECT * FROM student WHERE TRUE"
+        var query = "SELECT * FROM student "
+        query += buildFilterQuery(studentFilter)
+        query += " ORDER BY id LIMIT $pageSize OFFSET $offset"
+
+        val studentList: MutableList<Student> = ArrayList()
+        try {
+            db.connect()
+            val rs = db.executeQuery(query)
+            while (rs.next()) {
+                studentList.add(Student(rs))
+            }
+        } catch (e: SQLException) {
+            println("Error fetching filtered students: " + e.message)
+        } finally {
+            db.closeConnection()
+        }
+        return studentList
+    }
+
+    fun getFilteredStudentCount(studentFilter: StudentFilter?): Int {
+        var query = "SELECT COUNT(*) FROM student "
+        query += buildFilterQuery(studentFilter!!) // Метод для генерации условий фильтрации
+
+        try {
+            db.connect()
+            val rs = db.executeQuery(query)
+            if (rs.next()) {
+                return rs.getInt(1)
+            }
+        } catch (e: SQLException) {
+            println("Error counting students: " + e.message)
+        } finally {
+            db.closeConnection()
+        }
+        return 0
+    }
+
+    private fun buildFilterQuery(studentFilter: StudentFilter): String {
+        var query = "WHERE (TRUE"
         val nameFilter = studentFilter.nameFilter
         if (nameFilter.isNotEmpty()) query += " AND last_name || ' ' || first_name ILIKE '%$nameFilter%'"
         query = mutateQueryWithFilter(
@@ -93,21 +131,7 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()): St
             "telegram"
         )
 
-        query += " ORDER BY id LIMIT $pageSize OFFSET $offset"
-
-        val studentList: MutableList<Student> = ArrayList()
-        try {
-            db.connect()
-            val rs = db.executeQuery(query!!)
-            while (rs.next()) {
-                studentList.add(Student(rs))
-            }
-        } catch (e: SQLException) {
-            println("Error fetching filtered students: " + e.message)
-        } finally {
-            db.closeConnection()
-        }
-        return studentList
+        return "$query)"
     }
 
     private fun mutateQueryWithFilter(

@@ -12,14 +12,12 @@ import org.korsnaike.strategy.studentfileprocessing.StudentYamlFileProcessor
 import org.korsnaike.student.Student
 import org.korsnaike.student.Student_short
 import view.StudentApp
-import java.io.PrintStream
 
 
 fun getDb() : DbInterface = PostgreDb.getInstance()
 
 fun main() {
-    val args = arrayOf<String>()
-    StudentApp.create(args)
+    StudentApp.create()
 }
 
 fun testStudentAdapter() {
