@@ -1,10 +1,14 @@
 package org.korsnaike.adapter
 
+import org.korsnaike.dto.StudentFilter
 import org.korsnaike.pattern.student.Data_list_student_short
 import org.korsnaike.strategy.Student_list_file
 import org.korsnaike.student.Student
 
-class StudentListFileAdapter(private val studentListFile: Student_list_file) : StudentListInterface {
+class StudentListFileAdapter(
+    private val studentListFile: Student_list_file,
+    override var studentFilter: StudentFilter? = null
+) : StudentListInterface {
 
     override fun getStudentById(id: Int): Student? {
         return try {

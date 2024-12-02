@@ -1,6 +1,6 @@
 package org.korsnaike.pattern
 
-abstract class Data_list<T : Comparable<T>>(protected val elements: List<T>) {
+abstract class Data_list<T : Comparable<T>>(protected var elements: List<T>) {
     private val selectedIndices = mutableSetOf<Int>()
 
     init {

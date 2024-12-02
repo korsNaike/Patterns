@@ -1,6 +1,7 @@
 package org.korsnaike.strategy
 
 import org.korsnaike.adapter.StudentListInterface
+import org.korsnaike.dto.StudentFilter
 import org.korsnaike.pattern.student.Data_list_student_short
 import org.korsnaike.student.Student
 
@@ -10,7 +11,7 @@ class Student_list(private val studentSource: StudentListInterface) {
         return studentSource.getStudentById(id)
     }
 
-    fun getKNStudentShortList(k: Int, n: Int): Data_list_student_short {
+    fun getKNStudentShortList(k: Int, n: Int, studentFilter: StudentFilter? = null): Data_list_student_short {
         return studentSource.getKNStudentShortList(k, n)
     }
 

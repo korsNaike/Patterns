@@ -13,7 +13,10 @@ import java.sql.SQLException
 import java.sql.Statement
 
 
-class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()): StudentListInterface {
+class Student_list_DB(
+    private val db: DbInterface = PostgreDb.getInstance(),
+    override var studentFilter: StudentFilter? = null
+): StudentListInterface {
 
     init {
         db.initConnectionsParams(config = Config)
@@ -38,6 +41,9 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()): St
     }
 
     override fun getKNStudentShortList(k: Int, n: Int):  Data_list_student_short {
+        if (this.studentFilter != null) {
+            return Data_list_student_short(getFilteredStudentList(page = n, pageSize = k, studentFilter!!))
+        }
         val offset = (k - 1) * n
         val query = "SELECT * FROM student ORDER BY id LIMIT $n OFFSET $offset"
         val studentShortList = mutableListOf<Student_short>()
