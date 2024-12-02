@@ -7,11 +7,14 @@ import org.korsnaike.student.Student
 
 class Student_list(private val studentSource: StudentListInterface) {
 
+    var studentFilter: StudentFilter? = null
+
     fun getStudentById(id: Int): Student? {
         return studentSource.getStudentById(id)
     }
 
     fun getKNStudentShortList(k: Int, n: Int, studentFilter: StudentFilter? = null): Data_list_student_short {
+        this.studentFilter = studentFilter
         return studentSource.getKNStudentShortList(k, n)
     }
 

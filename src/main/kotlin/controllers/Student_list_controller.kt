@@ -29,7 +29,7 @@ class Student_list_controller(studentSourceData: StudentListInterface, private v
             )
             view.setDataList(dataListStudentShort)
         } catch (e: DbConnectionException) {
-            throwErrorMessage(e)
+            throwErrorMessage(e.message)
         }
     }
 
@@ -45,11 +45,40 @@ class Student_list_controller(studentSourceData: StudentListInterface, private v
             dataListStudentShort?.addObserver(view)
             dataListStudentShort?.notifyObservers()
         } catch (e: DbConnectionException) {
-            throwErrorMessage(e)
+            throwErrorMessage(e.message)
         }
     }
 
-    private fun throwErrorMessage(e: Exception) {
+    fun refresh_data() {
+        val page = dataListStudentShort?.pagination?.currentPage
+        val pageSize = dataListStudentShort?.pagination?.perPage
+        val studentFilter = studentsList.studentFilter
+        if (page == null || pageSize == null) {
+            throwErrorMessage("Список не был инициализирован, ошибка")
+            return
+        }
+        try {
+            dataListStudentShort = studentsList.getKNStudentShortList(k = pageSize, n = page, studentFilter = studentFilter);
+            dataListStudentShort?.pagination?.updatePagination(
+                studentsList.getStudentCount(),
+                page,
+                pageSize
+            )
+            view.setDataList(dataListStudentShort)
+            dataListStudentShort?.addObserver(view)
+            dataListStudentShort?.notifyObservers()
+        } catch (e: DbConnectionException) {
+            throwErrorMessage(e.message)
+        }
+    }
+
+    private fun throwErrorMessage(errorMessage: String?) {
+        var error = ""
+        if (errorMessage == null) {
+            error = "Неизвестная ошибка"
+        } else {
+            error = errorMessage
+        }
         val page = 1
         val pageSize = 20
         dataListStudentShort = Data_list_student_short(mutableListOf())
@@ -59,8 +88,7 @@ class Student_list_controller(studentSourceData: StudentListInterface, private v
             pageSize
         )
         view.setDataList(dataListStudentShort)
-        val message = e.message
-        view.showError("Error: $message")
+        view.showError("Error: $error")
     }
 
 }

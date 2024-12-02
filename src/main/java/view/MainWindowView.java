@@ -1,11 +1,9 @@
 package view;
 
-import org.jetbrains.annotations.NotNull;
+import org.korsnaike.controllers.StudentCreateController;
 import org.korsnaike.controllers.Student_list_controller;
-import org.korsnaike.db.exceptions.DbConnectionException;
 import org.korsnaike.dto.StudentFilter;
 import org.korsnaike.pattern.student.Data_list_student_short;
-import org.korsnaike.student.Student;
 import org.korsnaike.student.Student_short;
 
 import javax.swing.*;
@@ -108,6 +106,13 @@ public class MainWindowView implements ViewInterface {
             int selectedRowCount = table.getSelectedRowCount();
             editButton.setEnabled(selectedRowCount == 1); // "Изменить" доступна только при выделении одной строки
             deleteButton.setEnabled(selectedRowCount > 0); // "Удалить" доступна при выделении одной или более строк
+        });
+
+        addButton.addActionListener(e -> {
+            StudentCreateController studentCreateController = new StudentCreateController(this.controller);
+            StudentFormModal modal = new StudentFormModal();
+            modal.controller = studentCreateController;
+            modal.create(null, "Создать новую запись");
         });
 
         nextPageButton.addActionListener(e -> {
