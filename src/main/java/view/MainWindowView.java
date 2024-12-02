@@ -4,6 +4,7 @@ import org.korsnaike.controllers.StudentCreateController;
 import org.korsnaike.controllers.StudentUpdateController;
 import org.korsnaike.controllers.Student_list_controller;
 import org.korsnaike.dto.StudentFilter;
+import org.korsnaike.enums.SearchParam;
 import org.korsnaike.logger.SimpleLogger;
 import org.korsnaike.pattern.student.Data_list_student_short;
 import org.korsnaike.student.Student;
@@ -13,6 +14,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 public class MainWindowView implements ViewInterface {
 
@@ -88,7 +90,7 @@ public class MainWindowView implements ViewInterface {
     private JPanel createStudentTab() {
         SimpleLogger.info("Создание вкладки 'Список студентов'...");
         JPanel panel = new JPanel(new BorderLayout());
-//        addFilters(panel);
+        addFilters(panel);
 
         // Таблица студентов
         String[] columnNames = dataList.getEntityFields().toArray(new String[0]);
@@ -189,7 +191,7 @@ public class MainWindowView implements ViewInterface {
             }
         });
 
-        refreshButton.addActionListener(e -> controller.refresh_data(PAGE_SIZE, currentPage, null));
+        refreshButton.addActionListener(e -> updateFilterInfo());
 
         // Добавляем кнопки
         SimpleLogger.info("Обновление данных таблицы.");
@@ -269,5 +271,84 @@ public class MainWindowView implements ViewInterface {
         dialog.setSize(400, 300);
         dialog.setLayout(new GridLayout(7, 2));
         JOptionPane.showMessageDialog(dialog, "Произошла непредвиденная ошибка: " + message, "Ошибка", JOptionPane.ERROR_MESSAGE);
+    }
+
+     public void updateFilterInfo() {
+         String nameFilter = nameField.getText().trim();
+         SearchParam gitSearch = SearchParam.create(
+                 (String) Objects.requireNonNull(gitComboBox.getSelectedItem())
+         );
+         String gitFilter = gitField.getText().trim();
+         SearchParam emailSearch = SearchParam.create(
+                 (String) Objects.requireNonNull(emailComboBox.getSelectedItem())
+         );
+         String emailFilter = emailField.getText().trim();
+
+         SearchParam phoneSearch = SearchParam.create(
+                 (String) Objects.requireNonNull(phoneComboBox.getSelectedItem())
+         );
+         String phoneFilter = phoneField.getText().trim();
+
+         SearchParam telegramSearch = SearchParam.create(
+                 (String) Objects.requireNonNull(telegramComboBox.getSelectedItem())
+         );
+         String telegramFilter = telegramField.getText().trim();
+
+         StudentFilter studentFilter = new StudentFilter(
+                 nameFilter,
+                 gitFilter,
+                 emailFilter,
+                 phoneFilter,
+                 telegramFilter,
+                 gitSearch,
+                 phoneSearch,
+                 telegramSearch,
+                 emailSearch
+         );
+
+         controller.refresh_data(PAGE_SIZE, currentPage, studentFilter);
+     }
+
+    private void addFilters(JPanel panel) {
+        // Панель фильтрации
+        JPanel filterPanel = new JPanel(new GridLayout(5, 3));
+        filterPanel.setBorder(BorderFactory.createTitledBorder("Фильтры"));
+
+        // Настройка фильтров
+        setupFilter(gitComboBox, gitField);
+        setupFilter(emailComboBox, emailField);
+        setupFilter(phoneComboBox, phoneField);
+        setupFilter(telegramComboBox, telegramField);
+
+        // Добавляем элементы фильтров
+        filterPanel.add(new JLabel("Фамилия и инициалы:"));
+        filterPanel.add(nameField);
+        filterPanel.add(new JLabel()); // Заполнитель
+
+        filterPanel.add(new JLabel("GitHub:"));
+        filterPanel.add(gitComboBox);
+        filterPanel.add(gitField);
+
+        filterPanel.add(new JLabel("Email:"));
+        filterPanel.add(emailComboBox);
+        filterPanel.add(emailField);
+
+        filterPanel.add(new JLabel("Телефон:"));
+        filterPanel.add(phoneComboBox);
+        filterPanel.add(phoneField);
+
+        filterPanel.add(new JLabel("Telegram:"));
+        filterPanel.add(telegramComboBox);
+        filterPanel.add(telegramField);
+
+        panel.add(filterPanel, BorderLayout.NORTH);
+    }
+
+    private static void setupFilter(JComboBox<String> comboBox, JTextField textField) {
+        textField.setEnabled(false); // По умолчанию поле выключено
+        comboBox.addActionListener(e -> {
+            // Поле доступно только если выбран "Да"
+            textField.setEnabled(Objects.equals(comboBox.getSelectedItem(), "Да"));
+        });
     }
 }

@@ -12,6 +12,8 @@ interface StudentListInterface {
 
     fun addStudent(student: Student): Int
 
+    fun initStudentFilter(studentFilter: StudentFilter)
+
     fun updateStudent(student: Student): Boolean
 
     fun deleteStudent(id: Int): Boolean

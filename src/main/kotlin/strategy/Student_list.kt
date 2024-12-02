@@ -15,6 +15,9 @@ class Student_list(private val studentSource: StudentListInterface) {
 
     fun getKNStudentShortList(k: Int, n: Int, studentFilter: StudentFilter? = null): Data_list_student_short {
         this.studentFilter = studentFilter
+        if (studentFilter != null) {
+            this.studentSource.initStudentFilter(studentFilter)
+        }
         return studentSource.getKNStudentShortList(k, n)
     }
 

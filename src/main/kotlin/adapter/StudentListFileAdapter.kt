@@ -27,6 +27,10 @@ class StudentListFileAdapter(
         return student.id
     }
 
+    override fun initStudentFilter(studentFilter: StudentFilter) {
+        this.studentFilter = studentFilter
+    }
+
     override fun updateStudent(student: Student): Boolean {
         getStudentById(student.id) ?: return false
         studentListFile.replaceById(student, student.id)

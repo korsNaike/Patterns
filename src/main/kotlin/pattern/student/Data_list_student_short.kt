@@ -1,5 +1,6 @@
 package org.korsnaike.pattern.student
 
+import org.korsnaike.logger.SimpleLogger
 import org.korsnaike.observer.ObserveSubject
 import org.korsnaike.observer.Observer
 import org.korsnaike.pattern.Data_list
@@ -8,7 +9,9 @@ import org.korsnaike.student.Student_short
 
 class Data_list_student_short(students: List<Student_short>) : Data_list<Student_short>(students), ObserveSubject {
 
-    constructor(studentsList: List<Student>, count: Int) : this(studentsList.map { Student_short(it) })
+    constructor(studentsList: List<Student>, count: Int) : this(studentsList.map { Student_short(it) }) {
+        SimpleLogger.info(studentsList.toString())
+    }
 
     override val observers: MutableList<Observer> = mutableListOf()
 
