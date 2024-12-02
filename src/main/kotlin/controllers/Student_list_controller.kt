@@ -72,6 +72,10 @@ class Student_list_controller(studentSourceData: StudentListInterface, private v
         }
     }
 
+    fun deleteStudent(id: Int): Boolean {
+        return studentsList.deleteStudent(id)
+    }
+
     private fun throwErrorMessage(errorMessage: String?) {
         var error = ""
         if (errorMessage == null) {
