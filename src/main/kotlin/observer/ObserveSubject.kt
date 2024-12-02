@@ -11,7 +11,7 @@ interface ObserveSubject {
         observers.remove(observer)
     }
 
-    fun notify() {
+    fun notifyObservers() {
         observers.forEach { it.update() }
     }
 }

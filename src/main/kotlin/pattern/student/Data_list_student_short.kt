@@ -8,7 +8,7 @@ import org.korsnaike.student.Student_short
 
 class Data_list_student_short(students: List<Student_short>) : Data_list<Student_short>(students), ObserveSubject {
 
-    constructor(full_students: List<Student>) : this(students = full_students.map { Student_short(it) })
+    constructor(studentsList: List<Student>, count: Int) : this(studentsList.map { Student_short(it) })
 
     override val observers: MutableList<Observer> = mutableListOf()
 

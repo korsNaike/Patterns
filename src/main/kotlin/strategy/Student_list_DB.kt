@@ -15,7 +15,7 @@ import java.sql.Statement
 
 class Student_list_DB(
     private val db: DbInterface = PostgreDb.getInstance(),
-    override var studentFilter: StudentFilter? = null
+    var studentFilter: StudentFilter? = null
 ): StudentListInterface {
 
     init {
@@ -41,11 +41,13 @@ class Student_list_DB(
     }
 
     override fun getKNStudentShortList(k: Int, n: Int):  Data_list_student_short {
+        val page = n
+        val pageSize = k
         if (this.studentFilter != null) {
-            return Data_list_student_short(getFilteredStudentList(page = n, pageSize = k, studentFilter!!))
+            return Data_list_student_short(getFilteredStudentList(page = pageSize, pageSize = pageSize, studentFilter!!), 1)
         }
-        val offset = (k - 1) * n
-        val query = "SELECT * FROM student ORDER BY id LIMIT $n OFFSET $offset"
+        val offset = (page - 1) * pageSize
+        val query = "SELECT * FROM student ORDER BY id LIMIT $pageSize OFFSET $offset"
         val studentShortList = mutableListOf<Student_short>()
 
         try {
@@ -264,6 +266,9 @@ class Student_list_DB(
     }
 
     override fun getStudentCount(): Int {
+        if (this.studentFilter != null) {
+            return getFilteredStudentCount(studentFilter)
+        }
         val query = "SELECT COUNT(*) FROM student"
         try {
             db.connect()

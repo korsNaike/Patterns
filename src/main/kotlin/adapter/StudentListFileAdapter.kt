@@ -7,7 +7,7 @@ import org.korsnaike.student.Student
 
 class StudentListFileAdapter(
     private val studentListFile: Student_list_file,
-    override var studentFilter: StudentFilter? = null
+    var studentFilter: StudentFilter? = null
 ) : StudentListInterface {
 
     override fun getStudentById(id: Int): Student? {

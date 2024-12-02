@@ -1,6 +1,7 @@
 package org.korsnaike
 
 import org.korsnaike.adapter.StudentListFileAdapter
+import org.korsnaike.controllers.Student_list_controller
 import org.korsnaike.db.DbInterface
 import org.korsnaike.db.PostgreDb
 import org.korsnaike.pattern.student.Data_list_student_short
@@ -11,13 +12,16 @@ import org.korsnaike.strategy.studentfileprocessing.StudentJsonFileProcessor
 import org.korsnaike.strategy.studentfileprocessing.StudentYamlFileProcessor
 import org.korsnaike.student.Student
 import org.korsnaike.student.Student_short
+import view.MainWindowView
 import view.StudentApp
 
 
 fun getDb() : DbInterface = PostgreDb.getInstance()
 
 fun main() {
-    StudentApp.create()
+    val view = MainWindowView()
+    val controller = Student_list_controller(Student_list_DB(), view)
+    view.create(controller)
 }
 
 fun testStudentAdapter() {
