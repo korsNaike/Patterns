@@ -4,6 +4,7 @@ import org.korsnaike.controllers.StudentCreateController;
 import org.korsnaike.controllers.StudentUpdateController;
 import org.korsnaike.controllers.Student_list_controller;
 import org.korsnaike.dto.StudentFilter;
+import org.korsnaike.logger.SimpleLogger;
 import org.korsnaike.pattern.student.Data_list_student_short;
 import org.korsnaike.student.Student;
 import org.korsnaike.student.Student_short;
@@ -66,6 +67,7 @@ public class MainWindowView implements ViewInterface {
     public MainWindowView() {}
 
     public void create(Student_list_controller controller) {
+        SimpleLogger.info("Инициализация окна управления студентами...");
         setController(controller);
         controller.firstInitDataList();
         SwingUtilities.invokeLater(() -> {
@@ -78,11 +80,13 @@ public class MainWindowView implements ViewInterface {
 
             frame.add(tabbedPane);
             frame.setVisible(true);
+            SimpleLogger.info("Окно управления успешно инициализировано.");
             update();
         });
     }
 
     private JPanel createStudentTab() {
+        SimpleLogger.info("Создание вкладки 'Список студентов'...");
         JPanel panel = new JPanel(new BorderLayout());
 //        addFilters(panel);
 
@@ -111,6 +115,7 @@ public class MainWindowView implements ViewInterface {
         });
 
         addButton.addActionListener(e -> {
+            SimpleLogger.info("Нажата кнопка 'Добавить'.");
             StudentCreateController studentCreateController = new StudentCreateController(this.controller);
             StudentFormModal modal = new StudentFormModal();
             modal.controller = studentCreateController;
@@ -118,6 +123,7 @@ public class MainWindowView implements ViewInterface {
         });
 
         editButton.addActionListener(e -> {
+            SimpleLogger.info("Нажата кнопка 'Изменить'.");
             StudentUpdateController studentUpdateController = new StudentUpdateController(this.controller);
             StudentFormModal modal = new StudentFormModal();
             modal.controller = studentUpdateController;
@@ -126,6 +132,7 @@ public class MainWindowView implements ViewInterface {
                 int id = (int) tableModel.getValueAt(selectedRow, 0);
                 Student student = studentUpdateController.getStudentById(id);
                 if (student == null) {
+                    SimpleLogger.error("Студент с ID " + id + " не найден.");
                     showError("Запись не была найдена!");
                 }
                 modal.create(student, "Обновить запись");
@@ -133,6 +140,7 @@ public class MainWindowView implements ViewInterface {
         });
 
         deleteButton.addActionListener(e -> {
+            SimpleLogger.info("Нажата кнопка 'Удалить'.");
             int[] selectedRows = table.getSelectedRows();
             if (selectedRows.length > 0) {
                 int confirm = JOptionPane.showConfirmDialog(
@@ -148,14 +156,18 @@ public class MainWindowView implements ViewInterface {
                     // Удаляем студентов по их ID
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
                         int id = (int) tableModel.getValueAt(selectedRows[i], 0);
+                        SimpleLogger.info("Попытка удаления студента с ID: " + id);
                         if (!controller.deleteStudent(id)) {
+                            SimpleLogger.error("Не удалось удалить студента с ID: " + id);
                             success = false;
                         }
                     }
 
                     if (success) {
+                        SimpleLogger.info("Выбранные студенты успешно удалены.");
                         JOptionPane.showMessageDialog(panel, "Выбранные студенты удалены!");
                     } else {
+                        SimpleLogger.error("Не удалось удалить некоторых студентов.");
                         JOptionPane.showMessageDialog(panel, "Не удалось удалить некоторых студентов.", "Ошибка", JOptionPane.ERROR_MESSAGE);
                     }
                     controller.refresh_data();
@@ -165,12 +177,14 @@ public class MainWindowView implements ViewInterface {
 
         nextPageButton.addActionListener(e -> {
             currentPage++;
+            SimpleLogger.info("Переход на следующую страницу: " + currentPage);
             controller.refresh_data(PAGE_SIZE, currentPage, getCurrentFilter());
         });
 
         prevPageButton.addActionListener(e -> {
             if (currentPage > 1) {
                 currentPage--;
+                SimpleLogger.info("Переход на предыдущую страницу: " + currentPage);
                 controller.refresh_data(PAGE_SIZE, currentPage, getCurrentFilter());
             }
         });
@@ -178,6 +192,7 @@ public class MainWindowView implements ViewInterface {
         refreshButton.addActionListener(e -> controller.refresh_data(PAGE_SIZE, currentPage, null));
 
         // Добавляем кнопки
+        SimpleLogger.info("Обновление данных таблицы.");
         buttonPanel.add(pageInfoLabel); // Метка страницы
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
@@ -189,17 +204,20 @@ public class MainWindowView implements ViewInterface {
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
+        SimpleLogger.info("Вкладка 'Список студентов' успешно создана.");
         return panel;
     }
 
     @Override
     public void update() {
+        SimpleLogger.info("Обновление таблицы студентов.");
         set_table_params();
         set_table_data();
     }
 
     private void set_table_params() {
         List<String> newColumnNames = dataList.getEntityFields();
+        SimpleLogger.info("Загрузка данных студентов в таблицу.");
         tableModel.setColumnIdentifiers(newColumnNames.toArray());
 
         // Получаем количество страниц
@@ -211,6 +229,7 @@ public class MainWindowView implements ViewInterface {
             controller.refresh_data(PAGE_SIZE, currentPage, getCurrentFilter());
             return;
         }
+        SimpleLogger.info("Данные студентов успешно загружены.");
 
         updatePageControls(lastPage);
     }
