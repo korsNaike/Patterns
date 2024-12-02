@@ -1,9 +1,11 @@
 package view;
 
 import org.korsnaike.controllers.StudentCreateController;
+import org.korsnaike.controllers.StudentUpdateController;
 import org.korsnaike.controllers.Student_list_controller;
 import org.korsnaike.dto.StudentFilter;
 import org.korsnaike.pattern.student.Data_list_student_short;
+import org.korsnaike.student.Student;
 import org.korsnaike.student.Student_short;
 
 import javax.swing.*;
@@ -113,6 +115,21 @@ public class MainWindowView implements ViewInterface {
             StudentFormModal modal = new StudentFormModal();
             modal.controller = studentCreateController;
             modal.create(null, "Создать новую запись");
+        });
+
+        editButton.addActionListener(e -> {
+            StudentUpdateController studentUpdateController = new StudentUpdateController(this.controller);
+            StudentFormModal modal = new StudentFormModal();
+            modal.controller = studentUpdateController;
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow >= 0) {
+                int id = (int) tableModel.getValueAt(selectedRow, 0);
+                Student student = studentUpdateController.getStudentById(id);
+                if (student == null) {
+                    showError("Запись не была найдена!");
+                }
+                modal.create(student, "Обновить запись");
+            }
         });
 
         nextPageButton.addActionListener(e -> {

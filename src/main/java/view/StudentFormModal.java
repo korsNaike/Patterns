@@ -6,7 +6,7 @@ import org.korsnaike.student.Student;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
 
 public class StudentFormModal {
 
@@ -26,23 +26,43 @@ public class StudentFormModal {
         JTextField emailField = new JTextField(existingStudent != null && existingStudent.getEmail() != null ? existingStudent.getEmail() : "");
 
         // Добавляем компоненты
+        ArrayList<String> accessFields = controller.getAccessFields();
+        System.out.println(accessFields.toString());
         dialog.add(new JLabel("Фамилия:"));
         dialog.add(lastNameField);
+        if (!accessFields.contains("Фамилия")) {
+            lastNameField.setEnabled(false);
+        }
 
         dialog.add(new JLabel("Имя:"));
         dialog.add(firstNameField);
+        if (!accessFields.contains("Имя")) {
+            firstNameField.setEnabled(false);
+        }
 
         dialog.add(new JLabel("Отчество:"));
         dialog.add(middleNameField);
+        if (!accessFields.contains("Отчество")) {
+            middleNameField.setEnabled(false);
+        }
 
         dialog.add(new JLabel("Telegram:"));
         dialog.add(telegramField);
+        if (!accessFields.contains("Telegram")) {
+            telegramField.setEnabled(false);
+        }
 
         dialog.add(new JLabel("GitHub:"));
         dialog.add(gitField);
+        if (!accessFields.contains("GitHub")) {
+            gitField.setEnabled(false);
+        }
 
         dialog.add(new JLabel("Email:"));
         dialog.add(emailField);
+        if (!accessFields.contains("Email")) {
+            emailField.setEnabled(false);
+        }
 
         // Кнопки
         JButton saveButton = new JButton("Сохранить");
@@ -67,7 +87,7 @@ public class StudentFormModal {
                        emailField.getText().trim()
                );
 
-                String resultMessage = controller.saveProcessedStudent(student);
+                String resultMessage = controller.saveProcessedStudent(student, existingStudent != null ? existingStudent.getId() : null);
                 JOptionPane.showMessageDialog(dialog, resultMessage);
                 dialog.dispose();
             } catch (ValidateException exception) {

@@ -1,9 +1,18 @@
 package org.korsnaike.controllers
 
 import org.korsnaike.exceptions.ValidateException
+import org.korsnaike.strategy.Student_list
+import org.korsnaike.strategy.Student_list_DB
 import org.korsnaike.student.Student
 
-abstract class StudentFormController {
+abstract class StudentFormController(
+    val studentListController: Student_list_controller,
+    val studentList: Student_list
+) {
+    constructor(studentListController: Student_list_controller) : this(
+        studentListController,
+        Student_list(Student_list_DB())
+    )
 
     fun processForm(
         existingStudent: Student?,
@@ -29,5 +38,11 @@ abstract class StudentFormController {
         return student
     }
 
-    abstract fun saveProcessedStudent(student: Student): String
+    fun getStudentById(id: Int): Student? {
+        return studentList.getStudentById(id)
+    }
+
+    abstract fun saveProcessedStudent(student: Student, id: Int?): String
+
+    abstract fun getAccessFields(): ArrayList<String>
 }
