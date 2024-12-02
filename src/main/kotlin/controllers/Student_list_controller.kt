@@ -1,6 +1,7 @@
 package org.korsnaike.controllers
 
 import org.korsnaike.adapter.StudentListInterface
+import org.korsnaike.db.exceptions.DbConnectionException
 import org.korsnaike.dto.StudentFilter
 import org.korsnaike.pattern.student.Data_list_student_short
 import org.korsnaike.strategy.Student_list
@@ -19,25 +20,47 @@ class Student_list_controller(studentSourceData: StudentListInterface, private v
     fun firstInitDataList() {
         val page = 1
         val pageSize = 20
-        dataListStudentShort = studentsList.getKNStudentShortList(k = pageSize, n = page, studentFilter = null)
-        dataListStudentShort?.pagination?.updatePagination(
-            studentsList.getStudentCount(),
-            page,
-            pageSize
-        )
-        view.setDataList(dataListStudentShort)
+        try {
+            dataListStudentShort = studentsList.getKNStudentShortList(k = pageSize, n = page, studentFilter = null)
+            dataListStudentShort?.pagination?.updatePagination(
+                studentsList.getStudentCount(),
+                page,
+                pageSize
+            )
+            view.setDataList(dataListStudentShort)
+        } catch (e: DbConnectionException) {
+            throwErrorMessage(e)
+        }
     }
 
     fun refresh_data(pageSize: Int, page: Int, studentFilter: StudentFilter?) {
-        dataListStudentShort = studentsList.getKNStudentShortList(k = pageSize, n = page, studentFilter = studentFilter);
+        try {
+            dataListStudentShort = studentsList.getKNStudentShortList(k = pageSize, n = page, studentFilter = studentFilter);
+            dataListStudentShort?.pagination?.updatePagination(
+                studentsList.getStudentCount(),
+                page,
+                pageSize
+            )
+            view.setDataList(dataListStudentShort)
+            dataListStudentShort?.addObserver(view)
+            dataListStudentShort?.notifyObservers()
+        } catch (e: DbConnectionException) {
+            throwErrorMessage(e)
+        }
+    }
+
+    private fun throwErrorMessage(e: Exception) {
+        val page = 1
+        val pageSize = 20
+        dataListStudentShort = Data_list_student_short(mutableListOf())
         dataListStudentShort?.pagination?.updatePagination(
-            studentsList.getStudentCount(),
+            0,
             page,
             pageSize
         )
         view.setDataList(dataListStudentShort)
-        dataListStudentShort?.addObserver(view)
-        dataListStudentShort?.notifyObservers()
+        val message = e.message
+        view.showError("Error: $message")
     }
 
 }
