@@ -193,6 +193,7 @@ class Student_list_controller {
     + setView(view: MainWindowView)
     + firstInitDataList()
     + refresh_data(pageSize: Int, page: Int, studentFilter: StudentFilter?)
+    + deleteStudent(id: Int): Boolean
 }
 
 class MainWindowView {
@@ -276,6 +277,10 @@ class StudentCreateController {
     +saveProcessedStudent(student: Student): String
 }
 
+class StudentUpdateController {
+    +saveProcessedStudent(student: Student): String
+}
+
 ' Relationships
 StudentBase <|.. Student
 StudentBase <|.. Student_short
@@ -326,8 +331,12 @@ Observer <|. MainWindowView
 ObserveSubject <|.. Data_list_student_short
 
 StudentCreateController --|> StudentFormController
+StudentUpdateController --|> StudentFormController
 StudentCreateController --> Student_list
+StudentUpdateController --> Student_list
+
 StudentFormController --> Student_list_controller
-StudentFormModel --> StudentFormController
+
+StudentFormModal --> StudentFormController
 
 @enduml
