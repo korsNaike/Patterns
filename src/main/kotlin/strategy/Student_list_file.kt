@@ -1,5 +1,7 @@
 package org.korsnaike.strategy
 
+import org.korsnaike.dto.StudentFilter
+import org.korsnaike.enums.SearchParam
 import org.korsnaike.pattern.Data_list
 import org.korsnaike.pattern.student.Data_list_student_short
 import org.korsnaike.strategy.studentfileprocessing.StudentFileProcessorInterface
@@ -21,6 +23,8 @@ class Student_list_file(
     ) : this(mutableListOf(), fileProcessor) {
         read_from_file(filePath)
     }
+
+    var studentFilter: StudentFilter? = null;
 
     /**
      * Считывает объекты из файла, используя объект StudentFileProcessor
@@ -46,7 +50,7 @@ class Student_list_file(
     /**
      * Получить список k по счету n объектов класса Student_short
      *
-     * @param n - индекс с которого начинать выборку (должен быть 0 или больше)
+     * @param n - страница (должен быть 0 или больше)
      * @param k - количество элементов для выборки (должно быть больше 0)
      *
      * @return Список объектов Student_short
@@ -55,11 +59,64 @@ class Student_list_file(
         require(n >= 0) { "Индекс n должен быть больше или равен 0." }
         require(k > 0) { "Количество k должно быть больше 0." }
 
-        return Data_list_student_short(students
-            .drop(n)
+        if (studentFilter != null) {
+            return Data_list_student_short(
+                students
+                    .drop((n - 1) * k)
+                    .take(k)
+                    .stream()
+                    .filter { filterByStudentFilter(it) }
+                    .map { Student_short(it) }
+                    .toList()
+            )
+        }
+        return Data_list_student_short(
+            students
+            .drop((n - 1) * k)
             .take(k)
             .map { Student_short(it) }
         )
+    }
+
+    fun filterByStudentFilter(student: Student): Boolean {
+        if (studentFilter == null) {
+            return true;
+        }
+
+        if (studentFilter!!.nameFilter.isNotEmpty() && !student.getFullName().contains(studentFilter!!.nameFilter)) {
+            return false;
+        } else if (
+            !filterValueAndSearchParam(student.email, studentFilter!!.emailFilter, studentFilter!!.emailSearch) ||
+            !filterValueAndSearchParam(student.git, studentFilter!!.gitFilter, studentFilter!!.gitSearch) ||
+            !filterValueAndSearchParam(student.phone, studentFilter!!.phoneFilter, studentFilter!!.phoneSearch) ||
+            !filterValueAndSearchParam(student.telegram, studentFilter!!.telegramFilter, studentFilter!!.telegramSearch)
+            ) {
+            return false
+        }
+
+        return true
+    }
+
+    fun filterValueAndSearchParam(value: String?, filterValue: String, searchParam: SearchParam): Boolean {
+        if (
+            searchParam == SearchParam.YES &&
+            (
+                    (
+                            filterValue.isNotEmpty() && value?.contains(filterValue) != true
+                    ) ||
+                    (
+                            filterValue.isEmpty() && value.isNullOrEmpty()
+                    )
+            )
+        ) {
+            return false
+        } else if (
+            searchParam == SearchParam.NO &&
+            !value.isNullOrEmpty()
+        ) {
+            return false
+        }
+        return true
     }
 
     /**

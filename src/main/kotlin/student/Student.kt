@@ -196,5 +196,8 @@ class Student(
     }
 
     override fun getLastNameWithInitials(): String = "$lastName ${firstName.first()}. ${middleName.first()}."
+
+    fun getFullName(): String = "$lastName $firstName $middleName"
+
     override fun getGitInfo(): String? = git
 }

@@ -13,6 +13,10 @@ class Student_list_controller(studentSourceData: StudentListInterface, private v
     private var studentsList: Student_list = Student_list(studentSourceData);
     private var dataListStudentShort: Data_list_student_short? = null;
 
+    fun getStudentsList(): Student_list {
+        return studentsList
+    }
+
     fun setView(view: MainWindowView) {
         this.view = view
     }

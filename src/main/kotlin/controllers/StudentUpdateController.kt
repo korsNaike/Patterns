@@ -9,10 +9,7 @@ class StudentUpdateController(
     studentList: Student_list
 ) : StudentFormController(studentListController,studentList) {
 
-    constructor(studentListController: Student_list_controller) : this(
-        studentListController,
-        Student_list(Student_list_DB())
-    )
+    constructor(studentListController: Student_list_controller): this(studentListController, studentListController.getStudentsList())
 
     override fun saveProcessedStudent(student: Student, id: Int?): String {
         if (id == null) {

@@ -19,7 +19,8 @@ class StudentListFileAdapter(
     }
 
     override fun getKNStudentShortList(k: Int, n: Int): Data_list_student_short {
-        return studentListFile.get_k_n_student_short_list(k, n) as Data_list_student_short
+        studentListFile.studentFilter = this.studentFilter
+        return studentListFile.get_k_n_student_short_list(n=n,k=k) as Data_list_student_short
     }
 
     override fun addStudent(student: Student): Int {

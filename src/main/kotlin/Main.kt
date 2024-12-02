@@ -20,7 +20,9 @@ fun getDb() : DbInterface = PostgreDb.getInstance()
 
 fun main() {
     val view = MainWindowView()
-    val controller = Student_list_controller(Student_list_DB(), view)
+    val filePath = "src/files/students.yaml"
+    val studentListFile = Student_list_file(filePath, StudentYamlFileProcessor())
+    val controller = Student_list_controller(StudentListFileAdapter(studentListFile), view)
     view.create(controller)
 }
 

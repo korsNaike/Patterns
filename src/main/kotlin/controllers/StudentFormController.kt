@@ -11,7 +11,7 @@ abstract class StudentFormController(
 ) {
     constructor(studentListController: Student_list_controller) : this(
         studentListController,
-        Student_list(Student_list_DB())
+        studentListController.getStudentsList()
     )
 
     fun processForm(
