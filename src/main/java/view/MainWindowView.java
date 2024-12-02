@@ -12,7 +12,11 @@ import org.korsnaike.student.Student_short;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -102,6 +106,24 @@ public class MainWindowView implements ViewInterface {
         };
         JTable table = new JTable(tableModel);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        // Добавляем поддержку сортировки
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+        table.setRowSorter(sorter);
+
+        // Настройка сортировки
+        sorter.setComparator(1, Comparator.comparing(String::toString));
+        table.getTableHeader().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int column = table.columnAtPoint(e.getPoint());
+                if (column == 1) { // Проверяем индекс столбца "ФамилияИнициалы"
+                    SimpleLogger.info("Выполняем сортировку..");
+                    sorter.toggleSortOrder(column);
+                }
+            }
+        });
+
         JScrollPane scrollPane = new JScrollPane(table);
 
         // Панель управления
