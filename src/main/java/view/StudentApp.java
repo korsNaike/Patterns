@@ -75,7 +75,7 @@ public class StudentApp {
             }
         };
         JTable table = new JTable(tableModel);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         JScrollPane scrollPane = new JScrollPane(table);
 
         // Панель управления
@@ -85,9 +85,9 @@ public class StudentApp {
         deleteButton.setEnabled(false);
 
         table.getSelectionModel().addListSelectionListener(e -> {
-            boolean rowSelected = table.getSelectedRow() >= 0;
-            editButton.setEnabled(rowSelected);
-            deleteButton.setEnabled(rowSelected);
+            int selectedRowCount = table.getSelectedRowCount();
+            editButton.setEnabled(selectedRowCount == 1); // "Изменить" доступна только при выделении одной строки
+            deleteButton.setEnabled(selectedRowCount > 0); // "Удалить" доступна при выделении одной или более строк
         });
 
         // Загрузка данных в таблицу
@@ -127,14 +127,33 @@ public class StudentApp {
 
 
         deleteButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow >= 0) {
-                int id = (int) tableModel.getValueAt(selectedRow, 0);
-                if (studentDB.deleteStudent(id)) {
-                    JOptionPane.showMessageDialog(panel, "Студент удален!");
+            int[] selectedRows = table.getSelectedRows();
+            if (selectedRows.length > 0) {
+                int confirm = JOptionPane.showConfirmDialog(
+                        panel,
+                        "Вы уверены, что хотите удалить выбранных студентов?",
+                        "Подтверждение удаления",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    boolean success = true;
+
+                    // Удаляем студентов по их ID
+                    for (int i = selectedRows.length - 1; i >= 0; i--) {
+                        int id = (int) tableModel.getValueAt(selectedRows[i], 0);
+                        if (!studentDB.deleteStudent(id)) {
+                            success = false;
+                        }
+                    }
+
+                    if (success) {
+                        JOptionPane.showMessageDialog(panel, "Выбранные студенты удалены!");
+                    } else {
+                        JOptionPane.showMessageDialog(panel, "Не удалось удалить некоторых студентов.", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                    }
+
                     refreshInfo(tableModel);
-                } else {
-                    JOptionPane.showMessageDialog(panel, "Ошибка при удалении студента.");
                 }
             }
         });
