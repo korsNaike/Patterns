@@ -17,6 +17,9 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.2")
     implementation(kotlin("reflect"))
     testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("org.mockito:mockito-core:5.6.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.6.0")
 }
 
 tasks.test {
