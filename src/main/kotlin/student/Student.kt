@@ -1,8 +1,7 @@
 package org.korsnaike.student
 
-import java.io.File
-import java.io.FileNotFoundException
 import kotlinx.serialization.Serializable
+import org.korsnaike.exceptions.ValidateException
 import java.sql.ResultSet
 
 @Serializable
@@ -41,8 +40,8 @@ class Student(
          * Проверить верность номера
          */
         fun validatePhone(phoneNumber: String?) {
-            if (!(phoneNumber == null || PHONE_REGEX.matches(phoneNumber))) {
-                throw IllegalArgumentException("Invalid phone number format: $phoneNumber")
+            if (!(phoneNumber == null || phoneNumber == "" || PHONE_REGEX.matches(phoneNumber))) {
+                throw ValidateException("Invalid phone number format: $phoneNumber")
             }
         }
 
@@ -50,8 +49,8 @@ class Student(
          * Проверить верность почты
          */
         fun validateEmail(email: String?) {
-            if (!(email == null || EMAIL_REGEX.matches(email))) {
-                throw IllegalArgumentException("Invalid email format: $email")
+            if (!(email == null || email == "" || EMAIL_REGEX.matches(email))) {
+                throw ValidateException("Invalid email format: $email")
             }
         }
     }
@@ -73,6 +72,8 @@ class Student(
         this.phone = phone
     }
 
+    constructor() : this(0, "", "", "")
+
     constructor(
         info: Map<String, Any?>
     ) : this(
@@ -93,10 +94,10 @@ class Student(
         lastName = rs.getString("last_name").toString(),
         firstName = rs.getString("first_name").toString(),
         middleName = rs.getString("middle_name").toString(),
-        telegram = rs.getString("telegram").toString(),
-        phone = rs.getString("phone").toString(),
-        email = rs.getString("email").toString(),
-        git = rs.getString("git").toString()
+        telegram = rs.getString("telegram")?.toString() ?: "",
+        phone = rs.getString("phone")?.toString() ?: "",
+        email = rs.getString("email")?.toString() ?: "",
+        git = rs.getString("git")?.toString() ?: ""
     )
 
     constructor(
@@ -117,20 +118,20 @@ class Student(
             this.git = matchResult.groups[8]?.value.let { if (it == null || it == "null") null else it }
 
             if (firstName.isEmpty()) {
-                throw IllegalArgumentException("Invalid student string format: firstName is empty!")
+                throw ValidateException("Invalid student string format: firstName is empty!")
             }
             if (lastName.isEmpty()) {
-                throw IllegalArgumentException("Invalid student string format: lastName is empty!")
+                throw ValidateException("Invalid student string format: lastName is empty!")
             }
             if (middleName.isEmpty()) {
-                throw IllegalArgumentException("Invalid student string format: middleName is empty!")
+                throw ValidateException("Invalid student string format: middleName is empty!")
             }
 
             if (!validate()) {
-                throw IllegalArgumentException("Invalid student string format: git or some contact is empty")
+                throw ValidateException("Invalid student string format: git or some contact is empty")
             }
         } else {
-            throw IllegalArgumentException("Invalid student string format: $serializedString")
+            throw ValidateException("Invalid student string format: $serializedString")
         }
     }
 
@@ -148,6 +149,21 @@ class Student(
                                 this.telegram?.isNotEmpty() ?: false ||
                                 this.phone?.isNotEmpty() ?: false
                         )
+    }
+
+    fun transformEmptyStringsToNull() {
+        if (this.email == "") {
+            this.email = null;
+        }
+        if (this.telegram == "") {
+            this.telegram = null;
+        }
+        if (this.phone == "") {
+            this.phone = null;
+        }
+        if (this.git == "") {
+            this.git = null;
+        }
     }
 
     /**

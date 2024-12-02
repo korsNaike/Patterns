@@ -142,12 +142,12 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()): St
     ): String {
         var new_query = query
         if (search == SearchParam.YES) {
-            new_query += " AND $column_name IS NOT NULL"
+            new_query += " AND $column_name IS NOT NULL AND $column_name!=''"
             if (value.isNotEmpty()) {
                 new_query += " AND $column_name LIKE '%$value%'"
             }
         } else {
-            if (search == SearchParam.NO) new_query += " AND $column_name IS NULL"
+            if (search == SearchParam.NO) new_query += " AND ($column_name IS NULL OR $column_name='')"
         }
 
         return new_query
@@ -155,6 +155,7 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()): St
 
 
     override fun addStudent(student: Student): Int {
+        student.transformEmptyStringsToNull()
         val insertSQL = """
             INSERT INTO student (last_name, first_name, middle_name, telegram, git, phone, email)
             VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -193,6 +194,7 @@ class Student_list_DB(private val db: DbInterface = PostgreDb.getInstance()): St
     }
 
     override fun updateStudent(student: Student): Boolean {
+        student.transformEmptyStringsToNull()
         val updateSQL = """
             UPDATE student 
             SET last_name = ?, first_name = ?, middle_name = ?, telegram = ?, git = ?, phone = ?, email = ?
